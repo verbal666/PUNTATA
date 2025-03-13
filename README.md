@@ -45,14 +45,14 @@ Copiare il file batch al suo interno e lanciare il batch. Il batch è programmat
 
 All'utente verrà proposto un display con i contenuti rilevati ed un menu interattivo con cui agire,
 
-![immagine](https://github.com/user-attachments/assets/f1afd671-2326-4906-a0dd-48511adb4d94)
-PRIMA LISTA A DISPLAY
+![immagine](https://github.com/user-attachments/assets/f1afd671-2326-4906-a0dd-48511adb4d94)<br>
+<b>PRIMA LISTA A DISPLAY</b>
 
-![immagine](https://github.com/user-attachments/assets/91670300-b91b-4514-9f60-760704679c37)
-SELEZIONE DI UNA PUNTATA
+![immagine](https://github.com/user-attachments/assets/91670300-b91b-4514-9f60-760704679c37)<br>
+<b>SELEZIONE DI UNA PUNTATA</b>
 
-![immagine](https://github.com/user-attachments/assets/fa489ea1-d84c-4c00-861d-7efb33abcbc5)
-SUCCESSIVA LISTA A DISPLAY
+![immagine](https://github.com/user-attachments/assets/fa489ea1-d84c-4c00-861d-7efb33abcbc5)<br>
+<b>SUCCESSIVA LISTA A DISPLAY</b>
 
 A questo punto, la puntata è memorizzata, e al prossimo run l'utente avrà il reminder di quale l'ultima puntata che ha visionato.
 
