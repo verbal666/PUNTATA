@@ -27,7 +27,7 @@ Grazie.
 
 # FILESYSTEM
 Il batch utilizza
-* il batch stesso per la memorizzazione dei dati immessi dall'untente
+* il batch stesso per la memorizzazione dei dati immessi dall'utente
 * il file ```C:\Users\<UTENTE>\{PUNTATA}.player``` per memorizzare a livello utente il lettore multimediale selezionato
 
 # RUN
