@@ -26,9 +26,11 @@ Chiedo solamente rimanga il banner originale e che non venga omesso il mio nickn
 Grazie.
 
 # FILESYSTEM
-Il batch utilizza
+Il batch utilizza,
 * il batch stesso per la memorizzazione dei dati immessi dall'utente
 * il file ```C:\Users\<UTENTE>\{PUNTATA}.player``` per memorizzare a livello utente il lettore multimediale selezionato
+
+Non viene utilizzato nessun altro file/path Windows, nè quantomeno il registro.
 
 # RUN
 A fronte di una directory
