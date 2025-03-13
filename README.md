@@ -15,10 +15,38 @@ L'utilizzo dello script è completamente libero. L'utente ha facoltà di condivi
 Qualsiasi utente ha anche facoltà di aggiungere/rimuovere/ottimizzare/perfezionare/migliorare qualsiasi parte dello script.
 Chiedo solamente rimanga il banner originale e che non venga omesso il mio nickname da display.
 
+```
 *****************************************************************************
 *           GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV                    *
 *       PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA           *
 *                      2.4 BY VerbaL 2015-2025                              *
 *****************************************************************************
+```
 
 Grazie.
+
+# RUN
+A fronte di una directory
+
+```"E:\!!!.@N0W@TCHiNG.!!!\@SERIETV"```
+
+che presenta questi contenuti,
+
+```
+SERIETV S01 1x01 - Titolo Episodio 01.mkv
+SERIETV S01 1x02 - Titolo Episodio 02.mkv
+SERIETV S01 1x03 - Titolo Episodio 03.mkv
+SERIETV S01 1x04 - Titolo Episodio 04.mkv
+SERIETV S01 1x05 - Titolo Episodio 05.mkv
+SERIETV S01 1x06 - Titolo Episodio 06.mkv
+```
+
+Copiare il file batch al suo interno e lanciare il batch.
+
+All'utente verrà proposto un display con i contenuti rilevati ed un menu interattivo con cui agire,
+
+![immagine](https://github.com/user-attachments/assets/f1afd671-2326-4906-a0dd-48511adb4d94)
+
+![immagine](https://github.com/user-attachments/assets/91670300-b91b-4514-9f60-760704679c37)
+
+![immagine](https://github.com/user-attachments/assets/fa489ea1-d84c-4c00-861d-7efb33abcbc5)
