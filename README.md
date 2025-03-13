@@ -4,6 +4,9 @@ GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV - PERMETTE ALL'UTENTE DI MEMORIZZAR
 # COME NASCE
 Questo piccolo progetto, un unico semplice batch per Windows, nasce nel 2015, quando avevo la necessità di ricordare quale l'ultima puntata di una SerieTV avevo visto, a fronte di directory di file offline presi in download dai miei Provider di Servizi Streaming, sempre più affollate e numerose.
 
+# PERCHE' NASCE
+Principalmente perchè ero frustrato dal dover ricordare a mente o scrivermi quale fosse l'ultima puntata di una SerieTV che stavo seguendo OFFLINE 😉😉😉col rischio di rimanere minuti e minuti per trovare il punto dove fossi arrivato!!! 🙄 Le SerieTV ormai imperversano e fanno parte della nostra quotidianità, con qualità sempre maggiore sia a livello di sceneggiature che di tecnologie. Ma, volendo lavorare con file OFFLINE, quindi non direttamente sui Portali dei principali Servizi Streaming, che già adottano questa tecnica per memorizzare l'ultima puntata visionata, mi chiedevo PERCHE' non farlo anche su file OFFLINE senza scervellarsi o sprecare post-it e tempo 😂😂😂 ?
+
 # COSA FA
 Il batch elenca le puntate di una SerieTV presenti in una determinata directory, e permette all'utente, tramite un menu interattivo, di selezionare quale puntata visionare. A fronte della scelta, la puntata viene memorizzata come "vista" e al prossimo run l'utente avrà a video, come reminder, quale sia stata l'ultima puntata che ha visto.
 
