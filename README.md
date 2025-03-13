@@ -41,12 +41,19 @@ SERIETV S01 1x05 - Titolo Episodio 05.mkv
 SERIETV S01 1x06 - Titolo Episodio 06.mkv
 ```
 
-Copiare il file batch al suo interno e lanciare il batch.
+Copiare il file batch al suo interno e lanciare il batch. Il batch è programmato per gestire i principali tipi di file multimediali (avi,mkv,mp4).
 
 All'utente verrà proposto un display con i contenuti rilevati ed un menu interattivo con cui agire,
 
 ![immagine](https://github.com/user-attachments/assets/f1afd671-2326-4906-a0dd-48511adb4d94)
+PRIMA LISTA A DISPLAY
 
 ![immagine](https://github.com/user-attachments/assets/91670300-b91b-4514-9f60-760704679c37)
+SELEZIONE DI UNA PUNTATA
 
 ![immagine](https://github.com/user-attachments/assets/fa489ea1-d84c-4c00-861d-7efb33abcbc5)
+SUCCESSIVA LISTA A DISPLAY
+
+A questo punto, la puntata è memorizzata, e al prossimo run l'utente avrà il reminder di quale l'ultima puntata che ha visionato.
+
+Buona visione e buon divertimento.
