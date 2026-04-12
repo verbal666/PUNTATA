@@ -31,7 +31,7 @@ echo *       PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA          
 echo *                      %VERSION% BY VerbaL 2015-%date:~6,4%                              *
 echo *****************************************************************************[0m
 echo.
-set myself=%0
+set myself="%~f0"
 set mydata=METADATA
 set myhelp=#HELP#
 set tempfileplayer=%USERPROFILE%\%~n0.player
