@@ -143,8 +143,10 @@ for /f %%a in ('forfiles /m "*%puntata%%pp%*%ext%"^|find /c "%pp%"') do set nn=%
 if %nn% gtr 1 (echo TROVATI PIU' FILE CON DENOMINAZIONE "%pp%"&timeout /t 10&goto inizio)
 
 REM SEASON FINALE?
-for /f "delims=" %%a in ('powershell " %pp% + 0 "') do (set ppfinale=%%a)
-if "%ppfinale%" == "%npuntate%" for /l %%a in (1,1,25) do (echo.|set /p x=%SF%)
+	rem for /f "delims=" %%a in ('powershell " %pp% + 0 "') do (set ppfinale=%%a)
+	set /a ppfinale=%pp% 2>nul
+	rem if "%ppfinale%" == "%npuntate%" for /l %%a in (1,1,25) do (echo.|set /p x=%SF%)
+	if "%ppfinale%" == "%npuntate%" for /l %%a in (1,1,25) do <nul set /p x=%SF%
 if "%ppfinale%" == "%npuntate%" echo.&echo.
 
 echo Vuoi visionare la Puntata:[93m
