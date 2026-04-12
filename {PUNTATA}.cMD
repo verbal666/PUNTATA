@@ -4,7 +4,7 @@
 :: PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA
 :: BY VerbaL 2015
 :: -------------------------------------------------------------------
-set VERSION=2.4
+set VERSION=2.5
 
 
 :inizio
@@ -31,8 +31,9 @@ echo *       PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA          
 echo *                      %VERSION% BY VerbaL 2015-%date:~6,4%                              *
 echo *****************************************************************************[0m
 echo.
-set myself=%0
+set myself=%~f0
 set mydata=METADATA
+set myhelp=#HELP#
 set tempfileplayer=%USERPROFILE%\%~n0.player
 
 ::YOU ARE HERE
@@ -68,18 +69,11 @@ if !errorlevel! equ 0 (endlocal&set puntata=%%u&for /f %%a in ('dir /b /a-d^|fin
 
 :ok
 if "%puntata%"=="" (
+setlocal disabledelayedexpansion
 echo Nessuna puntata presente in questa directory.
-echo.
-echo Formato puntate, es.
-echo.
-echo 1x01
-echo 1e01
-echo 1ep01
-echo 1.e01
-echo 1.01
-echo 01
-echo.
-pause&goto END
+echo.&echo FORMATO PUNTATE&echo STAGIONE [1] o [2] digit == S1 / S01 / ST1 / ST01 ...&echo DIVISORE [x] [e] [ep] [.]&echo PUNTATA [2] digit == 01 / 02 / 03 / 10 ...&echo.
+for /f "tokens=2* delims=#" %%a in ('type %myself%^|findstr "^%myhelp%"') do (echo %%a)
+echo.&pause&goto END
 )
 endlocal
 echo.&echo [0m-----------------------------------------------------------------------------&echo|set /p=[7mTIPO PUNTATE:[0m %puntata%   [7mNUMERO PUNTATE:[0m %npuntate%
@@ -208,5 +202,13 @@ timeout /t 30 & exit /b 1
 exit /b 0
 
 
+REM !!!!!!!!!!!!!!!!!!!!!!! SEZIONE HELP PER TEMPLATE PUNTATE !!!!!!!!!!!!!!!!!!!!!!!
+#HELP#TEMPLATE
+#HELP#1x01
+#HELP#1e01
+#HELP#1ep01
+#HELP#1.e01
+#HELP#1.01
+#HELP#01
 REM !!!!!!!!!!!!!!!!!!!!!!! SEZIONE METADATA - NECESSARIA PER L'ESECUZIONE E MEMORIZZAZIONE DATI !!!!!!!!!!!!!!!!!!!!!!!
 METADATA;METADATA;METADATA
