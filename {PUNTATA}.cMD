@@ -54,8 +54,9 @@ echo [7mELENCO DELLE PUNTATE:[0m[93m
 ::CONTROLLA TIPO PUNTATE 0x00 0e00 0ep00 0.00 .00. 00
 echo.>"%TEMP%\puntate_type.dat"
 echo "[0-9]x[0-9][0-9]";x>>"%TEMP%\puntate_type.dat"
-echo "[0-9].e[0-9][0-9]";e>>"%TEMP%\puntate_type.dat"
+echo "[0-9]e[0-9][0-9]";e>>"%TEMP%\puntate_type.dat"
 echo "[0-9]ep[0-9][0-9]";ep>>"%TEMP%\puntate_type.dat"
+echo "[0-9].e[0-9][0-9]";e>>"%TEMP%\puntate_type.dat"
 echo "[0-9][.][0-9][0-9]";.>>"%TEMP%\puntate_type.dat"
 echo "[.][0-9][0-9][.]";.>>"%TEMP%\puntate_type.dat"
 echo "^[0-9][0-9]..";*>>"%TEMP%\puntate_type.dat"
@@ -66,7 +67,20 @@ if !errorlevel! equ 0 (endlocal&set puntata=%%u&for /f %%a in ('dir /b /a-d^|fin
 
 
 :ok
-if "%puntata%"=="" echo Nessuna puntata presente in questa directory. & goto END
+if "%puntata%"=="" (
+echo Nessuna puntata presente in questa directory.
+echo.
+echo Formato puntate, es.
+echo.
+echo 1x01
+echo 1e01
+echo 1ep01
+echo 1.e01
+echo 1.01
+echo 01
+echo.
+pause&goto END
+)
 endlocal
 echo.&echo [0m-----------------------------------------------------------------------------&echo|set /p=[7mTIPO PUNTATE:[0m %puntata%   [7mNUMERO PUNTATE:[0m %npuntate%
 
@@ -175,7 +189,7 @@ echo SM;D:\Utility\Audio-Video\Players\smplayer-portable.x64\smplayer.exe>%tempf
 	)
 	if "%player%"=="3" (
 REM MEDIAPLAYER-CLASSIC-BE
-echo MPC;D:\Utility\Audio-Video\Players\MPC-BE.x64\mpc-be64.exe>%tempfileplayer%
+echo MPC;D:\Utility\Audio-Video\Players\MPC-HC.x64\mpc-hc64.exe>%tempfileplayer%
 	)
 	if "%player%"=="4" (
 REM CUSTOM PLAYER
