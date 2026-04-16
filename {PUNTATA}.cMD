@@ -143,13 +143,13 @@ if %p% geq 0 set pp=%p%
 ::CHECK SYNTAX
 echo.
 echo %pp%|findstr "^[0-9][0-9]" >nul
-if %errorlevel% equ 1 (echo.&echo PUNTATA NON CORRETTA!&timeout /t 5&goto inizio)
+if errorlevel 1 (echo.&echo [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
 ::CHECK EXIST
-if not exist *%puntata%%pp%* (echo.&echo [91mERRORE: PUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio)
+if not exist *%puntata%%pp%* (echo.&echo [91mPUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio)
 ::calcola l'estensione
 set ext=
 for %%e in (.avi .mkv .mp4 .m4v) do (if not defined ext if exist "*%puntata%%pp%*%%e" set ext=%%e)
-if not defined ext (echo ERRORE: estensione non trovata!&pause&goto inizio)
+if not defined ext (echo [91mEstensione non trovata![0m&pause&goto inizio)
 ::CHECK SINGOLA PUNTATA
 for /f %%a in ('forfiles /m "*%puntata%%pp%*%ext%"^|find /c "%pp%"') do set nn=%%a
 if %nn% gtr 1 (echo TROVATI PIU' FILE CON DENOMINAZIONE "%pp%"&timeout /t 10&goto inizio)
@@ -176,7 +176,7 @@ REM AGGIUNGE NUOVO
 set "file="
 for /f "delims=" %%a in ('dir /b /a-d *%puntata%%pp%*%ext%') do (if not defined file set "file=%%a")
 if not defined file (
-    echo ERRORE: file non trovato!&pause
+    echo [91mFile non trovato![0m&pause
     goto inizio
 )
 setlocal disabledelayedexpansion
