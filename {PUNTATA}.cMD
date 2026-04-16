@@ -45,20 +45,20 @@ echo [7mDIRECTORY CORRENTE:[0m %cd%&echo.
 ::ELENCO I FILE DISPONIBILI
 echo [7mELENCO DELLE PUNTATE:[0m[93m
 ::CONTROLLA TIPO PUNTATE 0x00 0e00 0ep00 0.00 .00. 00
-echo.>"%TEMP%\puntate_type.dat"
-echo "[0-9]x[0-9][0-9]";x>>"%TEMP%\puntate_type.dat"
-echo "[0-9]e[0-9][0-9]";e>>"%TEMP%\puntate_type.dat"
-echo "[0-9]ep[0-9][0-9]";ep>>"%TEMP%\puntate_type.dat"
-echo "[0-9].e[0-9][0-9]";e>>"%TEMP%\puntate_type.dat"
-echo "[0-9][.][0-9][0-9]";.>>"%TEMP%\puntate_type.dat"
-echo "[.][0-9][0-9][.]";.>>"%TEMP%\puntate_type.dat"
-echo "^[0-9][0-9]..";*>>"%TEMP%\puntate_type.dat"
+type nul>"%TEMP%\puntate_type.dat"
+echo [0-9]x[0-9][0-9];x>>"%TEMP%\puntate_type.dat"
+echo [0-9]e[0-9][0-9];e>>"%TEMP%\puntate_type.dat"
+echo [0-9]ep[0-9][0-9];ep>>"%TEMP%\puntate_type.dat"
+echo [0-9].e[0-9][0-9];e>>"%TEMP%\puntate_type.dat"
+echo [0-9][.][0-9][0-9];.>>"%TEMP%\puntate_type.dat"
+echo [.][0-9][0-9][.];.>>"%TEMP%\puntate_type.dat"
+echo ^^[0-9][0-9]..;*>>"%TEMP%\puntate_type.dat"
 setlocal enabledelayedexpansion
-for /f "tokens=1,2 delims=;" %%t in (%TEMP%\puntate_type.dat) do (
+for /f "usebackq tokens=1,2 delims=;" %%t in ("%TEMP%\puntate_type.dat") do (
     set "found="
     for /f "delims=" %%A in ('dir /b /a-d ^| findstr /R /I "%media%" ^| findstr /R /I "%%t" ^| findstr /vi "%subs%"') do (
         set "line=%%A"
-        echo(!line:~0,75!..
+        echo(!line:~0,85!..
         set found=1
     )
     if defined found (
@@ -69,7 +69,6 @@ for /f "tokens=1,2 delims=;" %%t in (%TEMP%\puntate_type.dat) do (
         )
     )
 )
-
 
 :ok
 REM CONTROLLO FILE SOSPETTI (SAFE MODE) ...... TO FIX
@@ -138,7 +137,6 @@ if "%p%"=="+" (if %proxpn% lss 10 (set pp=0%proxpn%) else (set pp=%proxpn%) & go
 if "%p%"=="++" (if %proxpn2% lss 10 (set pp=0%proxpn2%) else (set pp=%proxpn2%) & goto check)
 if %p% geq 0 set pp=%p%
 
-
 :check
 ::CHECK SYNTAX
 echo.
@@ -152,7 +150,7 @@ for %%e in (.avi .mkv .mp4 .m4v) do (if not defined ext if exist "*%puntata%%pp%
 if not defined ext (echo [91mEstensione non trovata![0m&pause&goto inizio)
 ::CHECK SINGOLA PUNTATA
 for /f %%a in ('forfiles /m "*%puntata%%pp%*%ext%"^|find /c "%pp%"') do set nn=%%a
-if %nn% gtr 1 (echo TROVATI PIU' FILE CON DENOMINAZIONE "%pp%"&timeout /t 10&goto inizio)
+if %nn% gtr 1 (echo [91mTROVATI PIU' FILE CON DENOMINAZIONE "%pp%"[0m&timeout /t 10&goto inizio)
 
 REM SEASON FINALE?
 	rem for /f "delims=" %%a in ('powershell " %pp% + 0 "') do (set ppfinale=%%a)
