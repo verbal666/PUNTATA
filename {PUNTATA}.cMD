@@ -18,7 +18,7 @@ set plname=
 set plpath=
 set SF=[1;4;103m[30m************************ SEASON FINALE [0m
 ::CHECK OS & STARTUP
-wmic os get Caption|find "Windows 11">nul
+powershell -NoProfile -Command "(Get-CimInstance Win32_OperatingSystem).Caption" | find "Windows 11" >nul
 if errorlevel 1 (mode con: cols=100 lines=50)
 ::WINDOWS 11 CHECK TERMINAL OR CMD (IF TERMINAL DEFAULT LAYOUT, IF CMD 100X50)
 if not defined WT_SESSION (mode con: cols=100 lines=50)
