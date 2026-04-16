@@ -4,7 +4,7 @@
 :: PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA
 :: BY VerbaL 2015
 :: -------------------------------------------------------------------
-set VERSION=2.5
+set VERSION=3.0
 
 
 :inizio
@@ -35,19 +35,10 @@ set myself="%~f0"
 set mydata=METADATA
 set myhelp=#HELP#
 set tempfileplayer=%USERPROFILE%\%~n0.player
+set tmp_puntata=%TEMP%\tmp_puntata.batch
 
 ::YOU ARE HERE
 echo [7mDIRECTORY CORRENTE:[0m %cd%&echo.
-
-
-::CONTROLLO PRESENZA FILE CHE CREANO CONFLITTO
-::STRINGA DI PROBABILE CONFLITTO:
-::-EXCLUDE REGEX: "[.]srt$ [.]sub$ [.]idx$ x[0-9][0-9][0-9]"
-::-INCLUDE REGEX: "[0-9].[0-9][0-9].*[0-9][0-9]"
-rem set exclude="[.]srt$ [.]sub$ [.]idx$ x[0-9][0-9][0-9] 576 720 1080 264 265 [0-9][0-9][0-9][0-9] 5.1"
-rem set include="[0-9].[0-9][0-9].*[0-9][0-9]"
-rem dir /b /a-d|findstr /vi %exclude%|findstr /i %include% >nul
-rem if %errorlevel% equ 0 (color CF&echo.&echo =-=-=-=-=ATTENZIONE=-=-=-=-=ATTENZIONE=-=-=-=-=ATTENZIONE=-=-=-=-=ATTENZIONE=-=-=-=-=&echo.&echo LA DIRECTORY PRESENTA DEI FILE SOSPETTI CON NUMERI CHE CREANO CONFLITTO!&echo RINOMINARE IL FILE SOSTITUENDO IL NUMERO O INSERENDO DEGLI SPAZI!&echo.&echo =-=-=-=-=ATTENZIONE=-=-=-=-=ATTENZIONE=-=-=-=-=ATTENZIONE=-=-=-=-=ATTENZIONE=-=-=-=-=&echo.&echo.&echo DI SEGUITO I FILE SOSPETTI:&dir /b /a-d|findstr /vi %exclude%|findstr /i %include%&echo.&pause&exit /b 1)
 
 
 ::ELENCO I FILE DISPONIBILI
@@ -68,36 +59,46 @@ if !errorlevel! equ 0 (endlocal&set puntata=%%u&for /f %%a in ('dir /b /a-d^|fin
 
 
 :ok
+REM CONTROLLO FILE SOSPETTI (SAFE MODE) ...... TO FIX
+rem dir /b | findstr /r "[0-9][0-9]" >nul && echo File sospetti con numerazione presenti nella cartella.
+REM CONTROLLO FILE SOSPETTI (SAFE MODE) ...... TO FIX
 if "%puntata%"=="" (
 setlocal disabledelayedexpansion
-echo Nessuna puntata presente in questa directory.
-echo.&echo FORMATO PUNTATE&echo STAGIONE [1] o [2] digit == S1 / S01 / ST1 / ST01 ...&echo DIVISORE [x] [e] [ep] [.]&echo PUNTATA [2] digit == 01 / 02 / 03 / 10 ...&echo.
-for /f "tokens=2* delims=#" %%a in ('type %myself%^|findstr "^%myhelp%"') do (echo %%a)
+echo Nessuna puntata presente in questa directory.&echo.
+for /f "tokens=2* delims=#" %%a in ('type %myself%^|findstr "^%myhelp%"') do @echo(%%a
 echo.&pause&goto END
 )
 endlocal
-echo.&echo [0m-----------------------------------------------------------------------------&echo|set /p=[7mTIPO PUNTATE:[0m %puntata%   [7mNUMERO PUNTATE:[0m %npuntate%
+echo.&echo [0m+-------------------------------------------------------------------------------------+&echo|set /p=[7mTIPO PUNTATE:[0m %puntata%   [7mNUMERO PUNTATE:[0m %npuntate%
+echo.&echo [0m+-------------------------------------------------------------------------------------+
 
 
 ::REPORT + PLAYER DA TEMPFILES / METADATA
-::PUNTATA
-echo.&echo -----------------------------------------------------------------------------&echo [7mULTIMA PUNTATA VISTA:[0m[93m
+echo.
+echo [90m+-------------------------------------------------------------------------------------+[0m
+echo [90m^|[0m [96mULTIMA PUNTATA VISTA[0m                                                                [90m^|[0m
+echo [90m+-------------------------------------------------------------------------------------+[0m
 
-REM Estrae i metadata dallo script e verifica dati validi
-for /f %%a in ('type %myself%^|find /v /c ""') do (set myline=%%a)
-set /a myline=%myline% - 1
-for /f "tokens=1,2,3 delims=;" %%a in ('more +%myline% %myself%^|findstr "%mydata%"') do (set mymetadata=%%b)
-if not "%mymetadata%"=="%mydata%" (
-for /f "tokens=1,2,3 delims=;" %%a in ('more +%myline% %myself%^|findstr "%mydata%"') do (
-set lastp=%%b
-set lastpn=%%c
-echo ^(%%c^) %%b
-	if "%%c"=="08" (set proxpn=9&set proxpn2=10&goto player)
-	if "%%c"=="09" (set proxpn=10&set proxpn2=11&goto player)
-set /a proxpn=%%c + 1 >nul
-set /a proxpn2=%%c + 2 >nul
+REM Estrae i metadata dallo script
+set "lastp="
+set "lastpn="
+for /f "usebackq tokens=1,2,3 delims=;" %%a in (`findstr /b "%mydata%;" %myself%`) do (
+    if not "%%c"=="" (
+        set "lastp=%%b"
+        set "lastpn=%%c"
+    )
 )
-) else (echo NESSUNA PUNTATA ANCORA VISTA!&set proxpn=1&set proxpn2=2)
+if defined lastp (
+    echo [90m^|[0m Num  : [93m%lastpn%[0m
+    echo [90m^|[0m File : [92m%lastp%[0m
+    set /a proxpn=1%lastpn% - 99 >nul
+    set /a proxpn2=1%lastpn% - 98 >nul
+) else (
+    echo [90m^|[0m  [91mNESSUNA PUNTATA ANCORA VISTA[0m
+    set proxpn=1
+    set proxpn2=2
+)
+echo [90m+-------------------------------------------------------------------------------------+[0m
 
 
 :player
@@ -118,7 +119,8 @@ goto inizio
 
 :selector
 ::SELECTOR
-echo [0m-----------------------------------------------------------------------------&echo.
+rem echo [0m-----------------------------------------------------------------------------&echo.
+echo.
 set /p p=Puntata da vedere n.[[7mxx[0m] [[7m+[0m=Puntata+1] [[7m++[0m=Puntata+2] [[7mU[0m=Ultima vista] [[7mP[0mlayer=[93m%plname%[0m] [[7mQ[0m=ESCE] ? 
 if "%p%"=="" goto inizio
 if /i "%p%"=="q" exit /b 1
@@ -135,9 +137,11 @@ echo.
 echo %pp%|findstr "^[0-9][0-9]" >nul
 if %errorlevel% equ 1 (echo.&echo PUNTATA NON CORRETTA!&timeout /t 5&goto inizio)
 ::CHECK EXIST
-if not exist *%puntata%%pp%* (echo.&echo PUNTATA INESISTENTE!&timeout /t 5&goto inizio)
+if not exist *%puntata%%pp%* (echo.&echo [91mERRORE: PUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio)
 ::calcola l'estensione
-for %%e in (.avi .mkv .mp4 .m4v) do (if exist "*%puntata%%pp%*%%e" set ext=%%e)
+set ext=
+for %%e in (.avi .mkv .mp4 .m4v) do (if not defined ext if exist "*%puntata%%pp%*%%e" set ext=%%e)
+if not defined ext (echo ERRORE: estensione non trovata!&pause&goto inizio)
 ::CHECK SINGOLA PUNTATA
 for /f %%a in ('forfiles /m "*%puntata%%pp%*%ext%"^|find /c "%pp%"') do set nn=%%a
 if %nn% gtr 1 (echo TROVATI PIU' FILE CON DENOMINAZIONE "%pp%"&timeout /t 10&goto inizio)
@@ -156,9 +160,24 @@ rem echo.[0m
 set /p cc=[0m[[7mS[0m/[7mn[0m]
 if /i "%cc%"=="n" goto inizio
 
-
 ::MEMORIZZA ULTIMA PUNTATA
-for /f "tokens=*" %%a in ('dir /b /a-d *%puntata%%pp%*%ext%') do (echo %mydata%;%%a;%pp%>>%myself%)
+REM RIMUOVE METADATA VECCHI
+del "%tmp_puntata%" 2>nul
+findstr /v /b /c:"%mydata%;" %myself% >"%tmp_puntata%"
+REM AGGIUNGE NUOVO
+set "file="
+for /f "delims=" %%a in ('dir /b /a-d *%puntata%%pp%*%ext%') do (if not defined file set "file=%%a")
+if not defined file (
+    echo ERRORE: file non trovato!&pause
+    goto inizio
+)
+setlocal disabledelayedexpansion
+for %%F in ("%file%") do (
+    >>"%tmp_puntata%" echo %mydata%;%%~nxF;%pp%
+)
+endlocal
+REM RISCRIVE SCRIPT
+move /y "%tmp_puntata%" %myself% >nul
 
 
 :play
@@ -205,12 +224,31 @@ exit /b 0
 
 
 REM !!!!!!!!!!!!!!!!!!!!!!! SEZIONE HELP PER TEMPLATE PUNTATE !!!!!!!!!!!!!!!!!!!!!!!
-#HELP#TEMPLATE
-#HELP#1x01
-#HELP#1e01
-#HELP#1ep01
-#HELP#1.e01
-#HELP#1.01
-#HELP#01
+#HELP#[103m[30m===============================================================================[0m
+#HELP#[103m[30m                        FORMATO NOMI PUNTATE                                   [0m
+#HELP#[103m[30m===============================================================================[0m
+#HELP#
+#HELP#[96mSTAGIONE:[0m
+#HELP#  [90m- 1 o 2 cifre[0m
+#HELP#  [90m- Esempi:[0m [93mS1  S01  ST1  ST01[0m
+#HELP#
+#HELP#[96mSEPARATORE:[0m
+#HELP#  [93mx   e   ep   .[0m
+#HELP#
+#HELP#[96mNUMERO PUNTATA:[0m
+#HELP#  [90m- sempre 2 cifre[0m
+#HELP#  [90m- Esempi:[0m [93m01  02  10[0m
+#HELP#
+#HELP#[90m-------------------------------------------------------------------------------[0m
+#HELP#[95mESEMPI VALIDI:[0m
+#HELP#[90m-------------------------------------------------------------------------------[0m
+#HELP#  [92m- 1x01[0m
+#HELP#  [92m- 1e01[0m
+#HELP#  [92m- 1ep01[0m
+#HELP#  [92m- 1.e01[0m
+#HELP#  [92m- 1.01[0m
+#HELP#  [92m- 01[0m
+#HELP#[90m-------------------------------------------------------------------------------[0m
+#HELP#
+REM ======================= END HELP ==========================
 REM !!!!!!!!!!!!!!!!!!!!!!! SEZIONE METADATA - NECESSARIA PER L'ESECUZIONE E MEMORIZZAZIONE DATI !!!!!!!!!!!!!!!!!!!!!!!
-METADATA;METADATA;METADATA
