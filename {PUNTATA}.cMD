@@ -25,11 +25,12 @@ if errorlevel 1 (mode con: cols=100 lines=50)
 if not defined WT_SESSION (mode con: cols=100 lines=50)
 rem mode con: cols=120 lines=50&cls&title GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV&color 3F
 cls&title GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV&color 0F
-echo [103m[30m*****************************************************************************
-echo *           GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV                    *
-echo *       PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA           *
-echo *                      %VERSION% BY VerbaL 2015-%date:~6,4%                              *
-echo *****************************************************************************[0m
+echo [103m[30m+-------------------------------------------------------------------------------------+
+echo ^|              GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV                           ^|
+echo ^|          PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA                  ^|
+echo ^|                           %VERSION% BY VerbaL 2015-%date:~6,4%                                   ^|
+echo +-------------------------------------------------------------------------------------+[0m
+echo.
 echo.
 set myself="%~f0"
 set mydata=METADATA
@@ -224,31 +225,30 @@ exit /b 0
 
 
 REM !!!!!!!!!!!!!!!!!!!!!!! SEZIONE HELP PER TEMPLATE PUNTATE !!!!!!!!!!!!!!!!!!!!!!!
-#HELP#[103m[30m===============================================================================[0m
-#HELP#[103m[30m                        FORMATO NOMI PUNTATE                                   [0m
-#HELP#[103m[30m===============================================================================[0m
+#HELP#[103m[30m=======================================================================================[0m
+#HELP#[103m[30m                        FORMATO NOMI PUNTATE                                           [0m
+#HELP#[103m[30m=======================================================================================[0m
 #HELP#
 #HELP#[96mSTAGIONE:[0m
-#HELP#  [90m- 1 o 2 cifre[0m
-#HELP#  [90m- Esempi:[0m [93mS1  S01  ST1  ST01[0m
+#HELP#  [90m- 1 o 2 cifre                                                                       [0m
+#HELP#  [90m- Esempi:[0m [93mS1  S01  ST1  ST01                                                       [0m
 #HELP#
 #HELP#[96mSEPARATORE:[0m
-#HELP#  [93mx   e   ep   .[0m
+#HELP#  [93mx   e   ep   .                                                                       [0m
 #HELP#
 #HELP#[96mNUMERO PUNTATA:[0m
-#HELP#  [90m- sempre 2 cifre[0m
-#HELP#  [90m- Esempi:[0m [93m01  02  10[0m
+#HELP#  [90m- sempre 2 cifre                                                                    [0m
+#HELP#  [90m- Esempi:[0m [93m01  02  10                                                                [0m
 #HELP#
-#HELP#[90m-------------------------------------------------------------------------------[0m
+#HELP#[90m---------------------------------------------------------------------------------------[0m
 #HELP#[95mESEMPI VALIDI:[0m
-#HELP#[90m-------------------------------------------------------------------------------[0m
-#HELP#  [92m- 1x01[0m
-#HELP#  [92m- 1e01[0m
-#HELP#  [92m- 1ep01[0m
-#HELP#  [92m- 1.e01[0m
-#HELP#  [92m- 1.01[0m
-#HELP#  [92m- 01[0m
-#HELP#[90m-------------------------------------------------------------------------------[0m
-#HELP#
+#HELP#[90m---------------------------------------------------------------------------------------[0m
+#HELP#  [92m- 1x01                                                                              [0m
+#HELP#  [92m- 1e01                                                                              [0m
+#HELP#  [92m- 1ep01                                                                             [0m
+#HELP#  [92m- 1.e01                                                                             [0m
+#HELP#  [92m- 1.01                                                                              [0m
+#HELP#  [92m- 01                                                                                [0m
+#HELP#[90m---------------------------------------------------------------------------------------[0m
 REM ======================= END HELP ==========================
 REM !!!!!!!!!!!!!!!!!!!!!!! SEZIONE METADATA - NECESSARIA PER L'ESECUZIONE E MEMORIZZAZIONE DATI !!!!!!!!!!!!!!!!!!!!!!!
