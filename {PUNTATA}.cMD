@@ -37,6 +37,8 @@ set mydata=METADATA
 set myhelp=#HELP#
 set tempfileplayer=%USERPROFILE%\%~n0.player
 set tmp_puntata=%TEMP%\tmp_puntata.batch
+set "media=[.]avi$ [.]mkv$ [.]mp4$ [.]m4v$ [.]mov$ [.]wmv$ [.]flv$ [.]webm$ [.]mpg$ [.]mpeg$ [.]ts$ [.]m2ts$ [.]mts$ [.]vob$ [.]ogv$ [.]3gp$"
+set "subs=[.]srt$ [.]ass$ [.]ssa$ [.]vtt$ [.]sub$ [.]idx$ [.]sup$ [.]sbv$ [.]ttml$ [.]dfxp$ [.]smi$ [.]sami$ [.]stl$ [.]itt$"
 
 ::YOU ARE HERE
 echo [7mDIRECTORY CORRENTE:[0m %cd%&echo.
@@ -55,8 +57,20 @@ echo "[.][0-9][0-9][.]";.>>"%TEMP%\puntate_type.dat"
 echo "^[0-9][0-9]..";*>>"%TEMP%\puntate_type.dat"
 setlocal enabledelayedexpansion
 for /f "tokens=1,2 delims=;" %%t in (%TEMP%\puntate_type.dat) do (
-dir /b /a-d|findstr /vi "[.]srt$ [.]sub$ [.]idx$"|findstr /i %%t
-if !errorlevel! equ 0 (endlocal&set puntata=%%u&for /f %%a in ('dir /b /a-d^|findstr /vi "[.]srt$"^|findstr /vi "[.]sub$"^|findstr /vi "[.]idx$"^|findstr /i %%t^|find /c "."') do (set npuntate=%%a&goto ok)))
+    set "found="
+    for /f "delims=" %%A in ('dir /b /a-d ^| findstr /R /I "%media%" ^| findstr /R /I "%%t" ^| findstr /vi "%subs%"') do (
+        set "line=%%A"
+        echo(!line:~0,75!..
+        set found=1
+    )
+    if defined found (
+        endlocal & set puntata=%%u
+        for /f %%a in ('dir /b /a-d ^| findstr /vi "[.]srt$" ^| findstr /vi "[.]sub$" ^| findstr /vi "[.]idx$" ^| findstr /i %%t ^| find /c "."') do (
+            set npuntate=%%a
+            goto ok
+        )
+    )
+)
 
 
 :ok
@@ -91,7 +105,7 @@ for /f "usebackq tokens=1,2,3 delims=;" %%a in (`findstr /b "%mydata%;" %myself%
 )
 if defined lastp (
     echo [90m^|[0m Num  : [93m%lastpn%[0m
-    echo [90m^|[0m File : [92m%lastp%[0m
+    echo [90m^|[0m File : [92m%lastp:~,75%..[0m
     set /a proxpn=1%lastpn% - 99 >nul
     set /a proxpn2=1%lastpn% - 98 >nul
 ) else (
