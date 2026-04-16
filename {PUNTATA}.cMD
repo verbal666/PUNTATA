@@ -6,7 +6,6 @@
 :: -------------------------------------------------------------------
 set VERSION=3.0
 
-
 :inizio
 set cc=
 set p=
@@ -42,7 +41,6 @@ set "subs=[.]srt$ [.]ass$ [.]ssa$ [.]vtt$ [.]sub$ [.]idx$ [.]sup$ [.]sbv$ [.]ttm
 
 ::YOU ARE HERE
 echo [7mDIRECTORY CORRENTE:[0m %cd%&echo.
-
 
 ::ELENCO I FILE DISPONIBILI
 echo [7mELENCO DELLE PUNTATE:[0m[93m
@@ -87,7 +85,6 @@ endlocal
 echo.&echo [0m+-------------------------------------------------------------------------------------+&echo|set /p=[7mTIPO PUNTATE:[0m %puntata%   [7mNUMERO PUNTATE:[0m %npuntate%
 echo.&echo [0m+-------------------------------------------------------------------------------------+
 
-
 ::REPORT + PLAYER DA TEMPFILES / METADATA
 echo.
 echo [90m+-------------------------------------------------------------------------------------+[0m
@@ -115,7 +112,6 @@ if defined lastp (
 )
 echo [90m+-------------------------------------------------------------------------------------+[0m
 
-
 :player
 ::PLAYER
 if exist %tempfileplayer% (
@@ -131,10 +127,7 @@ if exist "C:\Program Files\VideoLAN\VLC\vlc.exe" echo VLC;C:\Program Files\Video
 goto inizio
 )
 
-
 :selector
-::SELECTOR
-rem echo [0m-----------------------------------------------------------------------------&echo.
 echo.
 set /p p=Puntata da vedere n.[[7mxx[0m] [[7m+[0m=Puntata+1] [[7m++[0m=Puntata+2] [[7mU[0m=Ultima vista] [[7mP[0mlayer=[93m%plname%[0m] [[7mQ[0m=ESCE] ? 
 if "%p%"=="" goto inizio
@@ -194,7 +187,6 @@ endlocal
 REM RISCRIVE SCRIPT
 move /y "%tmp_puntata%" %myself% >nul
 
-
 :play
 ::START PLAYING
 if not exist "%plpath%" (echo !!!IL LETTORE NON E' PRESENTE NEL SISTEMA NEL PATH INDICATO!!!&pause&exit /b 1)
@@ -202,7 +194,6 @@ rem echo %plname% - %plpath% - %~d0%~p0 & pause
 echo. & echo [7mINIZIO RIPRODUZIONE PUNTATA:
 if /i "%p%"=="u" (echo|set /p ="[93m%lastp%[0m" & call start /I /WAIT "" "%plpath%" "%~d0%~p0%lastp%") else (for %%a in (*%puntata%%pp%*%ext%) do (echo|set /p ="[93m%%a[0m" & call start /I /WAIT "" "%plpath%" "%~d0%~p0%%a"))
 exit /b 0
-
 
 :setplayer
 :: SELEZIONA IL PLAYER DA UTILIZZARE - VLC [default] - MPC/BE - SM
@@ -230,10 +221,8 @@ REM ----------------------------------------------------------------------------
 REM ---------------------------------------------------------------------------------- PLAYERS CHECK
 goto inizio
 
-
 :END
 timeout /t 30 & exit /b 1
-
 
 exit /b 0
 REM ================================================ HELP ====================================================
