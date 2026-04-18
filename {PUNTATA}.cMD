@@ -4,7 +4,7 @@
 :: PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA
 :: BY VerbaL 2015
 :: -------------------------------------------------------------------
-set VERSION=3.0
+set VERSION=3.1
 
 :inizio
 set cc=
@@ -13,7 +13,6 @@ set pp=
 set lastp=
 set lastpn=
 set proxpn=
-set proxpn2=
 set plname=
 set plpath=
 set SF=[1;4;103m[30m************************ SEASON FINALE [0m
@@ -46,13 +45,13 @@ echo [7mDIRECTORY CORRENTE:[0m %cd%&echo.
 echo [7mELENCO DELLE PUNTATE:[0m[93m
 ::CONTROLLA TIPO PUNTATE 0x00 0e00 0ep00 0.00 .00. 00
 type nul>"%TEMP%\puntate_type.dat"
-echo [0-9]x[0-9][0-9];x>>"%TEMP%\puntate_type.dat"
-echo [0-9]e[0-9][0-9];e>>"%TEMP%\puntate_type.dat"
-echo [0-9]ep[0-9][0-9];ep>>"%TEMP%\puntate_type.dat"
-echo [0-9].e[0-9][0-9];e>>"%TEMP%\puntate_type.dat"
-echo [0-9][.][0-9][0-9];.>>"%TEMP%\puntate_type.dat"
-echo [.][0-9][0-9][.];.>>"%TEMP%\puntate_type.dat"
-echo ^^[0-9][0-9]..;*>>"%TEMP%\puntate_type.dat"
+echo [0-9]x[0-9][0-9]*;x>>"%TEMP%\puntate_type.dat"
+echo [0-9]e[0-9][0-9]*;e>>"%TEMP%\puntate_type.dat"
+echo [0-9]ep[0-9][0-9]*;ep>>"%TEMP%\puntate_type.dat"
+echo [0-9].e[0-9][0-9]*;e>>"%TEMP%\puntate_type.dat"
+echo [0-9][.][0-9][0-9]*;.>>"%TEMP%\puntate_type.dat"
+echo [.][0-9][0-9]*[.];.>>"%TEMP%\puntate_type.dat"
+echo ^^[0-9][0-9]*..;*>>"%TEMP%\puntate_type.dat"
 setlocal enabledelayedexpansion
 for /f "usebackq tokens=1,2 delims=;" %%t in ("%TEMP%\puntate_type.dat") do (
     set "found="
@@ -102,12 +101,11 @@ for /f "usebackq tokens=1,2,3 delims=;" %%a in (`findstr /b "%mydata%;" %myself%
 if defined lastp (
     echo [90m^|[0m Num  : [93m%lastpn%[0m
     echo [90m^|[0m File : [92m%lastp:~,75%..[0m
-    set /a proxpn=1%lastpn% - 99 >nul
-    set /a proxpn2=1%lastpn% - 98 >nul
+	rem if %lastpn% lss 10 (set lastpn=%lastpn:0=%)
+    set /a proxpn=100+%lastpn%+1-100 2>nul
 ) else (
     echo [90m^|[0m  [91mNESSUNA PUNTATA ANCORA VISTA[0m
     set proxpn=1
-    set proxpn2=2
 )
 echo [90m+-------------------------------------------------------------------------------------+[0m
 
@@ -128,34 +126,44 @@ goto inizio
 
 :selector
 echo.
-set /p p=Puntata da vedere n.[[7mxx[0m] [[7m+[0m=Puntata+1] [[7m++[0m=Puntata+2] [[7mU[0m=Ultima vista] [[7mP[0mlayer=[93m%plname%[0m] [[7mQ[0m=ESCE] ? 
+set /p p=Puntata da vedere n.[[7mx[0m] [[7m+[0m=Puntata+1] [[7mU[0m=Ultima vista] [[7mP[0mlayer=[93m%plname%[0m] [[7mQ[0m=ESCE] ? 
 if "%p%"=="" goto inizio
 if /i "%p%"=="q" exit /b 1
 if /i "%p%"=="p" goto setplayer
 if /i "%p%"=="u" (if not "%lastp%"=="" (set pp=%lastpn%&goto check) else (goto inizio))
-if "%p%"=="+" (if %proxpn% lss 10 (set pp=0%proxpn%) else (set pp=%proxpn%) & goto check)
-if "%p%"=="++" (if %proxpn2% lss 10 (set pp=0%proxpn2%) else (set pp=%proxpn2%) & goto check)
+if "%p%"=="+" (set pp=%proxpn% & goto check)
 if %p% geq 0 set pp=%p%
 
 :check
 ::CHECK SYNTAX
 echo.
-echo %pp%|findstr "^[0-9][0-9]" >nul
+set pp=%pp: =%
+set /a pp=100+%pp%-100 2>nul
+echo %pp%|findstr "^[0-9][0-9]*$" >nul
 if errorlevel 1 (echo.&echo [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
+	REM ###FULL#DEBUG###
+	rem echo PUNTATA DA CERCARE#1 "*%puntata%%pp%*"
+	rem echo PUNTATA DA CERCARE#2 "*%puntata%0%pp%*"
+	rem pause
+	REM ###FULL#DEBUG###
 ::CHECK EXIST
-if not exist *%puntata%%pp%* (echo.&echo [91mPUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio)
+if exist *%puntata%0%pp%* (set pp=0%pp% & goto play_it)
+if exist *%puntata%%pp%* (goto play_it)
+echo.&echo [91mPUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio
+
+:play_it
 ::calcola l'estensione
+set pp=%pp: =%
 set ext=
 for %%e in (.avi .mkv .mp4 .m4v) do (if not defined ext if exist "*%puntata%%pp%*%%e" set ext=%%e)
 if not defined ext (echo [91mEstensione non trovata![0m&pause&goto inizio)
 ::CHECK SINGOLA PUNTATA
-for /f %%a in ('forfiles /m "*%puntata%%pp%*%ext%"^|find /c "%pp%"') do set nn=%%a
+for /f %%a in ('forfiles /m "*%puntata%%pp%*%ext%"^|find /c "%pp%"') do (set nn=%%a)
 if %nn% gtr 1 (echo [91mTROVATI PIU' FILE CON DENOMINAZIONE "%pp%"[0m&timeout /t 10&goto inizio)
 
 REM SEASON FINALE?
 	rem for /f "delims=" %%a in ('powershell " %pp% + 0 "') do (set ppfinale=%%a)
-	set /a ppfinale=1%pp%-100 2>nul
-	rem if "%ppfinale%" == "%npuntate%" for /l %%a in (1,1,25) do (echo.|set /p x=%SF%)
+	set /a ppfinale=100+%pp%-100 2>nul
 	if "%ppfinale%" == "%npuntate%" for /l %%a in (1,1,25) do <nul set /p x=%SF%
 if "%ppfinale%" == "%npuntate%" echo.&echo.
 
@@ -178,9 +186,7 @@ if not defined file (
     goto inizio
 )
 setlocal disabledelayedexpansion
-for %%F in ("%file%") do (
-    >>"%tmp_puntata%" echo %mydata%;%%~nxF;%pp%
-)
+for %%F in ("%file%") do (>>"%tmp_puntata%" echo %mydata%;%%~nxF;%pp%)
 endlocal
 REM RISCRIVE SCRIPT
 move /y "%tmp_puntata%" %myself% >nul
@@ -227,27 +233,32 @@ REM ================================================ HELP ======================
 #HELP#[103m[30m=======================================================================================[0m
 #HELP#[103m[30m                        FORMATO NOMI PUNTATE                                           [0m
 #HELP#[103m[30m=======================================================================================[0m
-#HELP#
+#HELP# #
 #HELP#[96mSTAGIONE:[0m
-#HELP#  [90m- 1 o 2 cifre                                                                       [0m
-#HELP#  [90m- Esempi:[0m [93mS1  S01  ST1  ST01                                                       [0m
-#HELP#
+#HELP#  [90m- 1 o 2 cifre[0m
+#HELP#  [90m- Esempi:[0m [93mS1  S01  ST1  ST01[0m
+#HELP# #
 #HELP#[96mSEPARATORE:[0m
-#HELP#  [93mx   e   ep   .                                                                       [0m
-#HELP#
+#HELP#  [93mx   e   ep   .[0m
+#HELP# #
 #HELP#[96mNUMERO PUNTATA:[0m
-#HELP#  [90m- sempre 2 cifre                                                                    [0m
-#HELP#  [90m- Esempi:[0m [93m01  02  10                                                                [0m
-#HELP#
+#HELP#  [90m- 1 o 2 cifre[0m
+#HELP#  [90m- Esempi:[0m [93m1  02  10[0m
+#HELP# #
 #HELP#[90m---------------------------------------------------------------------------------------[0m
 #HELP#[95mESEMPI VALIDI:[0m
 #HELP#[90m---------------------------------------------------------------------------------------[0m
-#HELP#  [92m- 1x01                                                                              [0m
-#HELP#  [92m- 1e01                                                                              [0m
-#HELP#  [92m- 1ep01                                                                             [0m
-#HELP#  [92m- 1.e01                                                                             [0m
-#HELP#  [92m- 1.01                                                                              [0m
-#HELP#  [92m- 01                                                                                [0m
+#HELP#  [92m- 1x1[0m
+#HELP#  [92m- 1x01[0m
+#HELP#  [92m- 1e1[0m
+#HELP#  [92m- 1e01[0m
+#HELP#  [92m- 1ep1[0m
+#HELP#  [92m- 1ep01[0m
+#HELP#  [92m- 1.e1[0m
+#HELP#  [92m- 1.e01[0m
+#HELP#  [92m- 1.1[0m
+#HELP#  [92m- 1.01[0m
+#HELP#  [92m- 01[0m
 #HELP#[90m---------------------------------------------------------------------------------------[0m
 REM ================================================ HELP ====================================================
 
