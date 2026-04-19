@@ -142,14 +142,9 @@ set pp=%pp: =%
 set /a pp=100+%pp%-100 2>nul
 echo %pp%|findstr "^[0-9][0-9]*$" >nul
 if errorlevel 1 (echo.&echo [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
-	REM ###FULL#DEBUG###
-	rem echo PUNTATA DA CERCARE#1 "*%puntata%%pp%*"
-	rem echo PUNTATA DA CERCARE#2 "*%puntata%0%pp%*"
-	rem pause
-	REM ###FULL#DEBUG###
+
 ::CHECK EXIST
-if exist "*%puntata%0%pp%*" (set pp=0%pp% & goto play_it)
-if exist "*%puntata%%pp%*" (goto play_it)
+for /f "delims=" %%f in ('dir /b /a-d "*%puntata%%pp%*" ^| findstr /R /I "%puntata%%pp%[^0-9]"') do (set "file=%%f" & goto play_it)
 echo.&echo [91mPUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio
 
 :play_it
@@ -158,9 +153,6 @@ set pp=%pp: =%
 set ext=
 for %%e in (.avi .mkv .mp4 .m4v) do (if not defined ext if exist "*%puntata%%pp%*%%e" set ext=%%e)
 if not defined ext (echo [91mEstensione non trovata![0m&pause&goto inizio)
-::CHECK SINGOLA PUNTATA
-for /f %%a in ('forfiles /m "*%puntata%%pp%*%ext%"^|find /c "%pp%"') do (set nn=%%a)
-if %nn% gtr 1 (echo [91mTROVATI PIU' FILE CON DENOMINAZIONE "%pp%"[0m&timeout /t 10&goto inizio)
 
 	REM SEASON FINALE?
 	rem for /f "delims=" %%a in ('powershell " %pp% + 0 "') do (set ppfinale=%%a)
@@ -169,9 +161,7 @@ if %nn% gtr 1 (echo [91mTROVATI PIU' FILE CON DENOMINAZIONE "%pp%"[0m&timeout 
 	if "%ppfinale%" == "%npuntate%" echo.&echo.
 
 echo Vuoi visionare la Puntata:[93m
-dir /b /a-d *%puntata%%pp%*%ext%
-rem echo.[0m
-
+dir /b /a-d "%file%"
 set /p cc=[0m[[7mS[0m/[7mn[0m]
 if /i "%cc%"=="n" goto inizio
 
@@ -180,15 +170,7 @@ REM RIMUOVE METADATA VECCHI
 del "%tmp_puntata%" 2>nul
 findstr /v /b /c:"%mydata%;" %myself% >"%tmp_puntata%"
 REM AGGIUNGE NUOVO
-set "file="
-for /f "delims=" %%a in ('dir /b /a-d *%puntata%%pp%*%ext%') do (if not defined file set "file=%%a")
-if not defined file (
-    echo [91mFile non trovato![0m&pause
-    goto inizio
-)
-setlocal disabledelayedexpansion
-for %%F in ("%file%") do (>>"%tmp_puntata%" echo %mydata%;%%~nxF;%pp%)
-endlocal
+>>"%tmp_puntata%" echo %mydata%;%file:"=%;%pp%
 REM RISCRIVE SCRIPT
 move /y "%tmp_puntata%" %myself% >nul
 
@@ -196,7 +178,7 @@ move /y "%tmp_puntata%" %myself% >nul
 ::START PLAYING
 if not exist "%plpath%" (echo !!!IL LETTORE NON E' PRESENTE NEL SISTEMA NEL PATH INDICATO!!!&pause&exit /b 1)
 echo. & echo [7mINIZIO RIPRODUZIONE PUNTATA:
-if /i "%p%"=="u" (echo|set /p ="[93m%lastp%[0m" & call start /I /WAIT "" "%plpath%" "%~d0%~p0%lastp%") else (for %%a in (*%puntata%%pp%*%ext%) do (echo|set /p ="[93m%%a[0m" & call start /I /WAIT "" "%plpath%" "%~d0%~p0%%a"))
+if /i "%p%"=="u" (echo|set /p ="[93m%lastp%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%lastp%") else (echo|set /p ="[93m%file:"=%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%file:"=%")
 exit /b 0
 
 :setplayer
