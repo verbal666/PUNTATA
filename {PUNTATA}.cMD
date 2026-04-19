@@ -7,14 +7,15 @@
 set VERSION=3.1
 
 :inizio
-set cc=
-set p=
-set pp=
-set lastp=
-set lastpn=
-set proxpn=
-set plname=
-set plpath=
+set "cc="
+set "p="
+set "pp="
+set "lastp="
+set "lastpn="
+set "proxpn="
+set "plname="
+set "plpath="
+set "file="
 set SF=[1;4;103m[30m************************ SEASON FINALE [0m
 	::CHECK OS & STARTUP
 	powershell -NoProfile -Command "(Get-CimInstance Win32_OperatingSystem).Caption" | find "Windows 11" >nul
@@ -113,16 +114,15 @@ echo [90m+---------------------------------------------------------------------
 :player
 ::PLAYER
 if exist "%tempfileplayer%" (
-	for /f "tokens=1,2 delims=;" %%a in ('type %tempfileplayer%') do (
-	set plname=%%a
-	set plpath=%%b
-)
+    for /f "tokens=1,2 delims=;" %%a in ('type "%tempfileplayer%"') do (
+        set plname=%%a
+        set plpath=%%b
+    )
 ) else (
-	rem echo No %tempfileplayer%, creo il file... VLC verra' impostato come Mediaplayer di default.
-	REM VLC 32/64 - INSTALLED - per versioni portable settare a mano il path a vlc.exe
-	if exist "C:\Program Files (x86)\VideoLAN\VLC\vlc.exe" echo VLC;C:\Program Files ^(x86^)\VideoLAN\VLC\vlc.exe>%tempfileplayer%
-	if exist "C:\Program Files\VideoLAN\VLC\vlc.exe" echo VLC;C:\Program Files\VideoLAN\VLC\vlc.exe>%tempfileplayer%
-	goto inizio
+    REM VLC 32/64 - INSTALLED
+    if exist "%ProgramFiles(x86)%\VideoLAN\VLC\vlc.exe" (echo VLC;C:\Program Files ^(x86^)\VideoLAN\VLC\vlc.exe>"%tempfileplayer%")
+	if exist "%ProgramFiles%\VideoLAN\VLC\vlc.exe" (echo VLC;C:\Program Files\VideoLAN\VLC\vlc.exe>"%tempfileplayer%")
+    goto inizio
 )
 
 :selector
@@ -144,6 +144,7 @@ echo %pp%|findstr "^[0-9][0-9]*$" >nul
 if errorlevel 1 (echo.&echo [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
 
 ::CHECK EXIST
+set "file="
 for /f "delims=" %%f in ('dir /b /a-d "*%puntata%0%pp%*" 2^>nul ^| findstr /R /I "%puntata%0%pp%[^0-9]"') do (set "file=%%f" & goto play_it)
 for /f "delims=" %%f in ('dir /b /a-d "*%puntata%%pp%*" 2^>nul ^| findstr /R /I "%puntata%%pp%[^0-9]"') do (set "file=%%f" & goto play_it)
 echo.&echo [91mPUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio
@@ -187,27 +188,30 @@ exit /b 0
 :setplayer
 :: SELEZIONA IL PLAYER DA UTILIZZARE - VLC [default] - MPC/BE - SM
 echo.&set /p player=[7m1[0m)VLC [7m2[0m)SM [7m3[0m)MPC [7m4[0m)Custom ? 
-	if "%player%"=="" goto inizio
-	if "%player%"=="1" (
-REM VLC 32/64 - INSTALLED - per versioni portable settare a mano il path a vlc.exe
-if exist "%ProgramFiles(x86)%\VideoLAN\VLC\vlc.exe" echo VLC;C:\Program Files ^(x86^)\VideoLAN\VLC\vlc.exe>%tempfileplayer%
-if exist "%ProgramFiles%\VideoLAN\VLC\vlc.exe" echo VLC;C:\Program Files\VideoLAN\VLC\vlc.exe>%tempfileplayer%
-	)
-	if "%player%"=="2" (
-REM SMPLAYER
-echo SM;D:\Utility\Audio-Video\Players\smplayer-portable.x64\smplayer.exe>%tempfileplayer%
-	)
-	if "%player%"=="3" (
-REM MEDIAPLAYER-CLASSIC-BE
-echo MPC;D:\Utility\Audio-Video\Players\MPC-HC.x64\mpc-hc64.exe>%tempfileplayer%
-	)
-	if "%player%"=="4" (
-REM CUSTOM PLAYER
-echo.&set /p Name=Name ? &set /p Path_To_Exe=Path_To_Exe ? 
-if exist "%Path_To_Exe%" (echo %Name%;%Path_To_Exe%>%tempfileplayer%) else (echo Path to exe errato.&timeout /t 10)
-	)
-REM ---------------------------------------------------------------------------------- PLAYERS
-REM ---------------------------------------------------------------------------------- PLAYERS CHECK
+if "%player%"=="" goto inizio
+if "%player%"=="1" (
+    REM VLC 32/64 - INSTALLED
+    if exist "%ProgramFiles(x86)%\VideoLAN\VLC\vlc.exe" (echo VLC;C:\Program Files ^(x86^)\VideoLAN\VLC\vlc.exe>"%tempfileplayer%")
+	if exist "%ProgramFiles%\VideoLAN\VLC\vlc.exe" (echo VLC;C:\Program Files\VideoLAN\VLC\vlc.exe>"%tempfileplayer%")
+)
+if "%player%"=="2" (
+    REM SMPLAYER
+    >"%tempfileplayer%" echo SM;D:\Utility\Audio-Video\Players\smplayer-portable.x64\smplayer.exe
+)
+if "%player%"=="3" (
+    REM MEDIAPLAYER-CLASSIC-BE
+    >"%tempfileplayer%" echo MPC;D:\Utility\Audio-Video\Players\MPC-HC.x64\mpc-hc64.exe
+)
+if "%player%"=="4" (
+    REM CUSTOM PLAYER
+    echo.&set /p Name=Name ? 
+    set /p Path_To_Exe=Path_To_Exe ? 
+    if exist "%Path_To_Exe%" (
+        >"%tempfileplayer%" echo %Name%;"%Path_To_Exe%"
+    ) else (
+        echo Path to exe errato.&timeout /t 10
+    )
+)
 goto inizio
 
 :END
