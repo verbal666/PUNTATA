@@ -144,13 +144,15 @@ echo %pp%|findstr "^[0-9][0-9]*$" >nul
 if errorlevel 1 (echo.&echo [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
 
 ::CHECK EXIST
-for /f "delims=" %%f in ('dir /b /a-d "*%puntata%%pp%*" ^| findstr /R /I "%puntata%%pp%[^0-9]"') do (set "file=%%f" & goto play_it)
+for /f "delims=" %%f in ('dir /b /a-d "*%puntata%0%pp%*" 2^>nul ^| findstr /R /I "%puntata%0%pp%[^0-9]"') do (set "file=%%f" & goto play_it)
+for /f "delims=" %%f in ('dir /b /a-d "*%puntata%%pp%*" 2^>nul ^| findstr /R /I "%puntata%%pp%[^0-9]"') do (set "file=%%f" & goto play_it)
 echo.&echo [91mPUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio
 
 :play_it
 ::calcola l'estensione
 set pp=%pp: =%
 set ext=
+for %%e in (.avi .mkv .mp4 .m4v) do (if not defined ext if exist "*%puntata%0%pp%*%%e" set ext=%%e)
 for %%e in (.avi .mkv .mp4 .m4v) do (if not defined ext if exist "*%puntata%%pp%*%%e" set ext=%%e)
 if not defined ext (echo [91mEstensione non trovata![0m&pause&goto inizio)
 
@@ -161,7 +163,8 @@ if not defined ext (echo [91mEstensione non trovata![0m&pause&goto inizio)
 	if "%ppfinale%" == "%npuntate%" echo.&echo.
 
 echo Vuoi visionare la Puntata:[93m
-dir /b /a-d "%file%"
+dir /b /a-d "%file%" 2>nul
+if errorlevel 1 (echo.&echo [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
 set /p cc=[0m[[7mS[0m/[7mn[0m]
 if /i "%cc%"=="n" goto inizio
 
@@ -178,7 +181,7 @@ move /y "%tmp_puntata%" %myself% >nul
 ::START PLAYING
 if not exist "%plpath%" (echo !!!IL LETTORE NON E' PRESENTE NEL SISTEMA NEL PATH INDICATO!!!&pause&exit /b 1)
 echo. & echo [7mINIZIO RIPRODUZIONE PUNTATA:
-if /i "%p%"=="u" (echo|set /p ="[93m%lastp%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%lastp%") else (echo|set /p ="[93m%file:"=%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%file:"=%")
+if /i "%p%"=="u" (echo(|set /p ="[93m%lastp%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%lastp%") else (echo(|set /p ="[93m%file%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%file:"=%")
 exit /b 0
 
 :setplayer
