@@ -1,9 +1,9 @@
 @echo off
-:: -------------------------------------------------------------------
-:: GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV
-:: PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA
-:: BY VerbaL 2015
-:: -------------------------------------------------------------------
+:: =================================================================
+:: ========== GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV =========
+:: === PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA ===
+:: ========================= BY VerbaL 2015 ========================
+:: =================================================================
 set VERSION=3.1
 
 :inizio
@@ -16,12 +16,12 @@ set proxpn=
 set plname=
 set plpath=
 set SF=[1;4;103m[30m************************ SEASON FINALE [0m
-::CHECK OS & STARTUP
-powershell -NoProfile -Command "(Get-CimInstance Win32_OperatingSystem).Caption" | find "Windows 11" >nul
-if errorlevel 1 (mode con: cols=100 lines=50)
-::WINDOWS 11 CHECK TERMINAL OR CMD (IF TERMINAL DEFAULT LAYOUT, IF CMD 100X50)
-if not defined WT_SESSION (mode con: cols=100 lines=50)
-rem mode con: cols=120 lines=50&cls&title GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV&color 3F
+	::CHECK OS & STARTUP
+	powershell -NoProfile -Command "(Get-CimInstance Win32_OperatingSystem).Caption" | find "Windows 11" >nul
+	if errorlevel 1 (mode con: cols=100 lines=50)
+	::WINDOWS 11 CHECK TERMINAL OR CMD (IF TERMINAL DEFAULT LAYOUT, IF CMD 100X50)
+	if not defined WT_SESSION (mode con: cols=100 lines=50)
+	rem mode con: cols=120 lines=50&cls&title GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV&color 3F
 cls&title GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV&color 0F
 echo [103m[30m+-------------------------------------------------------------------------------------+
 echo ^|              GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV                           ^|
@@ -33,7 +33,7 @@ echo.
 set myself="%~f0"
 set mydata=METADATA
 set myhelp=#HELP#
-set tempfileplayer=%USERPROFILE%\%~n0.player
+set "tempfileplayer=%USERPROFILE%\%~n0.player"
 set tmp_puntata=%TEMP%\tmp_puntata.batch
 set "media=[.]avi$ [.]mkv$ [.]mp4$ [.]m4v$ [.]mov$ [.]wmv$ [.]flv$ [.]webm$ [.]mpg$ [.]mpeg$ [.]ts$ [.]m2ts$ [.]mts$ [.]vob$ [.]ogv$ [.]3gp$"
 set "subs=[.]srt$ [.]ass$ [.]ssa$ [.]vtt$ [.]sub$ [.]idx$ [.]sup$ [.]sbv$ [.]ttml$ [.]dfxp$ [.]smi$ [.]sami$ [.]stl$ [.]itt$"
@@ -70,14 +70,14 @@ for /f "usebackq tokens=1,2 delims=;" %%t in ("%TEMP%\puntate_type.dat") do (
 )
 
 :ok
-REM CONTROLLO FILE SOSPETTI (SAFE MODE) ...... TO FIX
-rem dir /b | findstr /r "[0-9][0-9]" >nul && echo File sospetti con numerazione presenti nella cartella.
-REM CONTROLLO FILE SOSPETTI (SAFE MODE) ...... TO FIX
+REM CONTROLLO FILE SOSPETTI (SAFE MODE) ...... TODO..FIX
+rem ... ... ... ... ...
+REM CONTROLLO FILE SOSPETTI (SAFE MODE) ...... TODO..FIX
 if "%puntata%"=="" (
-setlocal disabledelayedexpansion
-echo Nessuna puntata presente in questa directory.&echo.
-for /f "tokens=2* delims=#" %%a in ('type %myself%^|findstr "^%myhelp%"') do @echo(%%a
-echo.&pause&goto END
+	setlocal disabledelayedexpansion
+	echo Nessuna puntata presente in questa directory.&echo.
+	for /f "tokens=2* delims=#" %%a in ('type %myself%^|findstr "^%myhelp%"') do @echo(%%a
+	echo.&pause&goto END
 )
 endlocal
 echo.&echo [0m+-------------------------------------------------------------------------------------+&echo|set /p=[7mTIPO PUNTATE:[0m %puntata%   [7mNUMERO PUNTATE:[0m %npuntate%
@@ -100,7 +100,8 @@ for /f "usebackq tokens=1,2,3 delims=;" %%a in (`findstr /b "%mydata%;" %myself%
 )
 if defined lastp (
     echo [90m^|[0m Num  : [93m%lastpn%[0m
-    echo [90m^|[0m File : [92m%lastp:~,75%..[0m
+    rem bug "&" echo [90m^|[0m File : [92m%lastp:~,75%..[0m
+	echo [90m^|[0m File : [92m"%lastp:~,73%" ..[0m
 	rem if %lastpn% lss 10 (set lastpn=%lastpn:0=%)
     set /a proxpn=100+%lastpn%+1-100 2>nul
 ) else (
@@ -111,17 +112,17 @@ echo [90m+---------------------------------------------------------------------
 
 :player
 ::PLAYER
-if exist %tempfileplayer% (
-for /f "tokens=1,2 delims=;" %%a in ('type %tempfileplayer%') do (
-set plname=%%a
-set plpath=%%b
+if exist "%tempfileplayer%" (
+	for /f "tokens=1,2 delims=;" %%a in ('type %tempfileplayer%') do (
+	set plname=%%a
+	set plpath=%%b
 )
 ) else (
-rem echo No %tempfileplayer%, creo il file... VLC verra' impostato come Mediaplayer di default.
-REM VLC 32/64 - INSTALLED - per versioni portable settare a mano il path a vlc.exe
-if exist "C:\Program Files (x86)\VideoLAN\VLC\vlc.exe" echo VLC;C:\Program Files ^(x86^)\VideoLAN\VLC\vlc.exe>%tempfileplayer%
-if exist "C:\Program Files\VideoLAN\VLC\vlc.exe" echo VLC;C:\Program Files\VideoLAN\VLC\vlc.exe>%tempfileplayer%
-goto inizio
+	rem echo No %tempfileplayer%, creo il file... VLC verra' impostato come Mediaplayer di default.
+	REM VLC 32/64 - INSTALLED - per versioni portable settare a mano il path a vlc.exe
+	if exist "C:\Program Files (x86)\VideoLAN\VLC\vlc.exe" echo VLC;C:\Program Files ^(x86^)\VideoLAN\VLC\vlc.exe>%tempfileplayer%
+	if exist "C:\Program Files\VideoLAN\VLC\vlc.exe" echo VLC;C:\Program Files\VideoLAN\VLC\vlc.exe>%tempfileplayer%
+	goto inizio
 )
 
 :selector
@@ -132,7 +133,7 @@ if /i "%p%"=="q" exit /b 1
 if /i "%p%"=="p" goto setplayer
 if /i "%p%"=="u" (if not "%lastp%"=="" (set pp=%lastpn%&goto check) else (goto inizio))
 if "%p%"=="+" (set pp=%proxpn% & goto check)
-if %p% geq 0 set pp=%p%
+echo %p%|findstr "^[0-9][0-9]*$" >nul && set pp=%p%
 
 :check
 ::CHECK SYNTAX
@@ -147,8 +148,8 @@ if errorlevel 1 (echo.&echo [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto ini
 	rem pause
 	REM ###FULL#DEBUG###
 ::CHECK EXIST
-if exist *%puntata%0%pp%* (set pp=0%pp% & goto play_it)
-if exist *%puntata%%pp%* (goto play_it)
+if exist "*%puntata%0%pp%*" (set pp=0%pp% & goto play_it)
+if exist "*%puntata%%pp%*" (goto play_it)
 echo.&echo [91mPUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio
 
 :play_it
@@ -161,11 +162,11 @@ if not defined ext (echo [91mEstensione non trovata![0m&pause&goto inizio)
 for /f %%a in ('forfiles /m "*%puntata%%pp%*%ext%"^|find /c "%pp%"') do (set nn=%%a)
 if %nn% gtr 1 (echo [91mTROVATI PIU' FILE CON DENOMINAZIONE "%pp%"[0m&timeout /t 10&goto inizio)
 
-REM SEASON FINALE?
+	REM SEASON FINALE?
 	rem for /f "delims=" %%a in ('powershell " %pp% + 0 "') do (set ppfinale=%%a)
 	set /a ppfinale=100+%pp%-100 2>nul
 	if "%ppfinale%" == "%npuntate%" for /l %%a in (1,1,25) do <nul set /p x=%SF%
-if "%ppfinale%" == "%npuntate%" echo.&echo.
+	if "%ppfinale%" == "%npuntate%" echo.&echo.
 
 echo Vuoi visionare la Puntata:[93m
 dir /b /a-d *%puntata%%pp%*%ext%
@@ -194,7 +195,6 @@ move /y "%tmp_puntata%" %myself% >nul
 :play
 ::START PLAYING
 if not exist "%plpath%" (echo !!!IL LETTORE NON E' PRESENTE NEL SISTEMA NEL PATH INDICATO!!!&pause&exit /b 1)
-rem echo %plname% - %plpath% - %~d0%~p0 & pause
 echo. & echo [7mINIZIO RIPRODUZIONE PUNTATA:
 if /i "%p%"=="u" (echo|set /p ="[93m%lastp%[0m" & call start /I /WAIT "" "%plpath%" "%~d0%~p0%lastp%") else (for %%a in (*%puntata%%pp%*%ext%) do (echo|set /p ="[93m%%a[0m" & call start /I /WAIT "" "%plpath%" "%~d0%~p0%%a"))
 exit /b 0
@@ -205,8 +205,8 @@ echo.&set /p player=[7m1[0m)VLC [7m2[0m)SM [7m3[0m)MPC [7m4[0m)Custom ?
 	if "%player%"=="" goto inizio
 	if "%player%"=="1" (
 REM VLC 32/64 - INSTALLED - per versioni portable settare a mano il path a vlc.exe
-if exist "C:\Program Files (x86)\VideoLAN\VLC\vlc.exe" echo VLC;C:\Program Files ^(x86^)\VideoLAN\VLC\vlc.exe>%tempfileplayer%
-if exist "C:\Program Files\VideoLAN\VLC\vlc.exe" echo VLC;C:\Program Files\VideoLAN\VLC\vlc.exe>%tempfileplayer%
+if exist "%ProgramFiles(x86)%\VideoLAN\VLC\vlc.exe" echo VLC;C:\Program Files ^(x86^)\VideoLAN\VLC\vlc.exe>%tempfileplayer%
+if exist "%ProgramFiles%\VideoLAN\VLC\vlc.exe" echo VLC;C:\Program Files\VideoLAN\VLC\vlc.exe>%tempfileplayer%
 	)
 	if "%player%"=="2" (
 REM SMPLAYER
