@@ -7,6 +7,7 @@
 set VERSION=3.1
 
 :inizio
+chcp 65001 >nul
 set "cc="
 set "p="
 set "pp="
