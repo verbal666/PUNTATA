@@ -4,7 +4,7 @@
 :: === PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA ===
 :: ========================= BY VerbaL 2015 ========================
 :: =================================================================
-set VERSION=3.1
+set VERSION=3.2
 
 :inizio
 :: --- INIT --- ALGORITMO DI NORMALIZZAZIONE NOMI FILE (VMAX FINAL ONE-LINER) ---
