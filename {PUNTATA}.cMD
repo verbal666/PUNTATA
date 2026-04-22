@@ -7,6 +7,9 @@
 set VERSION=3.1
 
 :inizio
+:: --- INIT --- ALGORITMO DI NORMALIZZAZIONE NOMI FILE (VMAX FINAL ONE-LINER) ---
+powershell -NoProfile -Command "Get-ChildItem -File | ForEach-Object { $n = $_.Name; $new = $n -replace '[&!%%^();, ]', '.'; if ($n -ne $new -and -not (Test-Path $new)) { Rename-Item -LiteralPath $n -NewName $new } }" 2>nul
+:: --- INIT --- FINE NORMALIZZAZIONE ---
 chcp 65001 >nul
 set "cc="
 set "p="
