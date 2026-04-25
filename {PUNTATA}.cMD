@@ -7,9 +7,6 @@
 set VERSION=3.2
 
 :inizio
-:: --- INIT --- ALGORITMO DI NORMALIZZAZIONE NOMI FILE (VMAX FINAL ONE-LINER) ---
-powershell -NoProfile -Command "Get-ChildItem -File | ForEach-Object { $n = $_.Name; $new = $n -replace '[&!%%^();, ]', '.'; if ($n -ne $new -and -not (Test-Path $new)) { Rename-Item -LiteralPath $n -NewName $new } }" 2>nul
-:: --- INIT --- FINE NORMALIZZAZIONE ---
 chcp 65001 >nul
 set "cc="
 set "p="
@@ -87,6 +84,10 @@ if "%puntata%"=="" (
 endlocal
 echo.&echo [0m+-------------------------------------------------------------------------------------+&echo|set /p=[7mTIPO PUNTATE:[0m %puntata%   [7mNUMERO PUNTATE:[0m %npuntate%
 echo.&echo [0m+-------------------------------------------------------------------------------------+
+
+REM INIT --- INIZIO NORMALIZZAZIONE NOMI FILE (VMAX FINAL ONE-LINER) --- FAST.PS
+powershell -NoProfile -Command "Get-ChildItem -File | ForEach-Object { $n = $_.Name; $new = $n -replace '[&!%%^();, ]', '.'; if ($n -ne $new -and -not (Test-Path $new)) { Rename-Item -LiteralPath $n -NewName $new } }" 2>nul
+REM INIT --- FINE NORMALIZZAZIONE --- FAST.PS
 
 ::REPORT + PLAYER DA TEMPFILES / METADATA
 echo.
@@ -222,6 +223,7 @@ goto inizio
 timeout /t 30 & exit /b 1
 
 exit /b 0
+
 REM ================================================ HELP ====================================================
 #HELP#[103m[30m=======================================================================================[0m
 #HELP#[103m[30m                        FORMATO NOMI PUNTATE                                           [0m
