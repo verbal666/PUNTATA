@@ -75,6 +75,8 @@ for /f "usebackq tokens=1,2 delims=;" %%t in ("%TEMP%\puntate_type.dat") do (
 REM CONTROLLO FILE SOSPETTI (SAFE MODE) ...... TODO..FIX
 rem ... ... ... ... ...
 REM CONTROLLO FILE SOSPETTI (SAFE MODE) ...... TODO..FIX
+
+::validatore finale
 if "%puntata%"=="" (
 	setlocal disabledelayedexpansion
 	echo Nessuna puntata presente in questa directory.&echo.
@@ -85,8 +87,11 @@ endlocal
 echo.&echo [0m+-------------------------------------------------------------------------------------+&echo|set /p=[7mTIPO PUNTATE:[0m %puntata%   [7mNUMERO PUNTATE:[0m %npuntate%
 echo.&echo [0m+-------------------------------------------------------------------------------------+
 
-REM INIT --- INIZIO NORMALIZZAZIONE NOMI FILE (VMAX FINAL ONE-LINER) --- FAST.PS
-powershell -NoProfile -Command "Get-ChildItem -File | ForEach-Object { $n = $_.Name; $new = $n -replace '[&!%%^();, ]', '.'; if ($n -ne $new -and -not (Test-Path $new)) { Rename-Item -LiteralPath $n -NewName $new } }" 2>nul
+	REM INIT --- INIZIO NORMALIZZAZIONE NOMI FILE (VMAX v3.3 FINAL ONE-LINER) --- FAST.PS
+	:: Estrae le estensioni dalle tue variabili %media% e %subs% e pulisce i nomi
+	powershell -NoProfile -Command "$vid = '%media%' -split ' ' -replace '\[\.\]', '.' -replace '\$', ''; $sub = '%subs%' -split ' ' -replace '\[\.\]', '.' -replace '\$', ''; Get-ChildItem -LiteralPath . -File | Where-Object { $e = $_.Extension; ($vid + $sub) | Where-Object { $e -match $_ } } | ForEach-Object { $n = $PSItem.Name; $new = $n -replace '[&!%%%%^();, ]+', '.'; $new = $new -replace '\.{2,}', '.'; if ($n -ne $new -and -not (Test-Path -LiteralPath $new)) { Rename-Item -LiteralPath $n -NewName $new -ErrorAction SilentlyContinue } }" 2>nul
+	REM INIT --- FINE NORMALIZZAZIONE ---
+
 REM INIT --- FINE NORMALIZZAZIONE --- FAST.PS
 
 ::REPORT + PLAYER DA TEMPFILES / METADATA
