@@ -192,8 +192,8 @@ if not defined ext (echo %margin%[91mEstensione non trovata![0m&pause&goto ini
 
 echo %margin% Vuoi visionare la Puntata:[93m
 echo(|set /p=%margin: =═% &dir /b /a-d "%file%" 2>nul
-if errorlevel 1 (echo(&echo %margin%[91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
-echo(|set /p "p=%margin: =═% "&set /p cc=[0m[[7mS[0m/[7mn[0m] 
+if errorlevel 1 (echo(&echo %margin% [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
+echo(|set /p p="%margin: =═% "&set /p cc=[0m[[7mS[0m/[7mn[0m] 
 if /i "%cc%"=="n" goto inizio
 
 ::MEMORIZZA ULTIMA PUNTATA
@@ -207,9 +207,15 @@ move /y "%tmp_puntata%" %myself% >nul
 
 :play
 ::START PLAYING
-if not exist "%plpath%" (echo %margin%!!!IL LETTORE NON E' PRESENTE NEL SISTEMA NEL PATH INDICATO!!!&pause&exit /b 1)
-echo( & echo %margin%[7mINIZIO RIPRODUZIONE PUNTATA:
-if /i "%p%"=="u" (echo(|set /p ="[93m%lastp%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%lastp%") else (echo(|set /p ="[93m%file%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%file:"=%")
+if not exist "%plpath%" (echo %margin% !!!IL LETTORE NON E' PRESENTE NEL SISTEMA NEL PATH INDICATO!!!&pause&exit /b 1)
+echo( & echo %margin% [7mINIZIO RIPRODUZIONE PUNTATA:[0m[93m
+if /i "%p%"=="u" (
+echo(|set /p="%margin: =═% " & echo %lastp%[0m"
+call start /I /WAIT "" "%plpath%" "%~dp0%lastp%"
+) else (
+echo(|set /p="%margin: =═% " & echo %file%[0m
+call start /I /WAIT "" "%plpath%" "%~dp0%file:"=%"
+)
 exit /b 0
 
 :setplayer
