@@ -8,6 +8,7 @@ set VERSION=3.2
 
 :inizio
 chcp 65001 >nul
+set "margin=  "
 set "cc="
 set "p="
 set "pp="
@@ -17,19 +18,19 @@ set "proxpn="
 set "plname="
 set "plpath="
 set "file="
-set SF=[1;4;103m[30m************************ SEASON FINALE [0m
+set SF=[103;30m║                S E A S O N   F I N A L E   S E A S O N   F I N A L E                ║[0m
 	::CHECK OS & STARTUP
 	powershell -NoProfile -Command "(Get-CimInstance Win32_OperatingSystem).Caption" | find "Windows 11" >nul
 	if errorlevel 1 (mode con: cols=100 lines=50)
 	::WINDOWS 11 CHECK TERMINAL OR CMD (IF TERMINAL DEFAULT LAYOUT, IF CMD 100X50)
 	if not defined WT_SESSION (mode con: cols=100 lines=50)
 	rem mode con: cols=120 lines=50&cls&title GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV&color 3F
-cls&title GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV&color 0F
-echo [103m[30m+-------------------------------------------------------------------------------------+
-echo ^|              GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV                           ^|
-echo ^|          PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA                  ^|
-echo ^|                           %VERSION% BY VerbaL 2015-%date:~6,4%                                   ^|
-echo +-------------------------------------------------------------------------------------+[0m
+cls&title GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV&color 0F&echo(
+echo %margin%[103;30m╔═════════════════════════════════════════════════════════════════════════════════════╗[0m
+echo %margin%[103;30m║                     GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV                    ║[0m
+echo %margin%[103;30m║              PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA              ║[0m
+echo %margin%[103;30m║                           %VERSION% BY VerbaL 2015-%date:~6,4%                                   ║[0m
+echo %margin%[103;30m╚═════════════════════════════════════════════════════════════════════════════════════╝[0m
 echo(
 echo(
 set myself="%~f0"
@@ -41,10 +42,10 @@ set "media=[.]avi$ [.]mkv$ [.]mp4$ [.]m4v$ [.]mov$ [.]wmv$ [.]flv$ [.]webm$ [.]m
 set "subs=[.]srt$ [.]ass$ [.]ssa$ [.]vtt$ [.]sub$ [.]idx$ [.]sup$ [.]sbv$ [.]ttml$ [.]dfxp$ [.]smi$ [.]sami$ [.]stl$ [.]itt$"
 
 ::YOU ARE HERE
-echo [7mDIRECTORY CORRENTE:[0m %cd%&echo(
+echo %margin%[7mDIRECTORY CORRENTE:[0m %cd%&echo(
 
 ::ELENCO I FILE DISPONIBILI
-echo [7mELENCO DELLE PUNTATE:[0m[93m
+echo %margin%[7mELENCO DELLE PUNTATE:[0m[93m
 ::CONTROLLA TIPO PUNTATE 0x00 0e00 0ep00 0.00 .00. 00
 type nul>"%TEMP%\puntate_type.dat"
 echo [0-9]x[0-9][0-9]*;x>>"%TEMP%\puntate_type.dat"
@@ -59,7 +60,7 @@ for /f "usebackq tokens=1,2 delims=;" %%t in ("%TEMP%\puntate_type.dat") do (
     set "found="
     for /f "delims=" %%A in ('dir /b /a-d ^| findstr /R /I "%media%" ^| findstr /R /I "%%t" ^| findstr /vi "%subs%"') do (
         set "line=%%A"
-        echo(!line:~0,85!..
+        echo(%margin%!line:~0,85!..
         set found=1
     )
     if defined found (
@@ -77,12 +78,12 @@ REM CONTROLLO PATH/FILE SOSPETTI (SAFE MODE) ......
 :: []
 cd|findstr "[[] []]" >nul && (
 echo(&echo(
-echo [0;7m╔═════════════════════════════════════════════════════════════════════════════════════╗
-echo ║ NOTE UTENTE                                                                         ║
-echo ╠═════════════════════════════════════════════════════════════════════════════════════╣
-echo ║ L'UTILIZZO DI CARATTERI SPECIALI [ ] NEI PATH POTREBBE PORTARE                      ║
-echo ║ A PROBLEMI DI RUN DELLO SCRIPT                                                      ║
-echo ╚═════════════════════════════════════════════════════════════════════════════════════╝[0m
+echo %margin%[0;7m╔═════════════════════════════════════════════════════════════════════════════════════╗[0m
+echo %margin%[0;7m║ NOTE UTENTE                                                                         ║[0m
+echo %margin%[0;7m╠═════════════════════════════════════════════════════════════════════════════════════╣[0m
+echo %margin%[0;7m║ L'UTILIZZO DI CARATTERI SPECIALI [ ] NEI PATH POTREBBE PORTARE                      ║[0m
+echo %margin%[0;7m║ A PROBLEMI DI RUN DELLO SCRIPT                                                      ║[0m
+echo %margin%[0;7m╚═════════════════════════════════════════════════════════════════════════════════════╝[0m
 echo(
 )
 REM CONTROLLO PATH/FILE SOSPETTI (SAFE MODE) ......
@@ -90,13 +91,15 @@ REM CONTROLLO PATH/FILE SOSPETTI (SAFE MODE) ......
 ::validatore finale
 if "%puntata%"=="" (
 	setlocal disabledelayedexpansion
-	echo Nessuna puntata presente in questa directory.&echo(
-	for /f "tokens=2* delims=#" %%a in ('type %myself%^|findstr "^%myhelp%"') do @echo(%%a
+	echo %margin%Nessuna puntata presente in questa directory.&echo(
+	for /f "tokens=2* delims=#" %%a in ('type %myself%^|findstr "^%myhelp%"') do @echo(%margin%%%a
 	echo(&pause&goto END
 )
 endlocal
-echo(&echo [0m+-------------------------------------------------------------------------------------+&echo [90m^| [0m[7mTIPO PUNTATE:[0m %puntata%   [7mNUMERO PUNTATE:[0m %npuntate%
-echo [0m+-------------------------------------------------------------------------------------+
+set "add="
+if %npuntate% lss 10 (set add= ) else (set add=)
+echo(&echo %margin%[0m╔═════════════════════════════════════════════════════════════════════════════════════╗&echo %margin%║ [0m[7mTIPO PUNTATE:[0m %puntata%   [7mNUMERO PUNTATE:[0m %npuntate%                                                %add%║
+echo %margin%[0m╚═════════════════════════════════════════════════════════════════════════════════════╝
 
 	REM INIT --- INIZIO NORMALIZZAZIONE NOMI FILE (VMAX v3.3 FINAL ONE-LINER) --- FAST.PS
 	:: Estrae le estensioni dalle tue variabili %media% e %subs% e pulisce i nomi
@@ -105,9 +108,9 @@ echo [0m+----------------------------------------------------------------------
 
 ::REPORT + PLAYER DA TEMPFILES / METADATA
 echo(
-echo [90m+-------------------------------------------------------------------------------------+[0m
-echo [90m^|[0m [96mULTIMA PUNTATA VISTA[0m                                                                [90m^|[0m
-echo [90m+-------------------------------------------------------------------------------------+[0m
+echo %margin%[90m╔═════════════════════════════════════════════════════════════════════════════════════╗[0m
+echo %margin%[90m║[0m [96mULTIMA PUNTATA VISTA[0m                                                                [90m║[0m
+echo %margin%[90m╠═════════════════════════════════════════════════════════════════════════════════════╝[0m
 
 REM Estrae i metadata dallo script
 set "lastp="
@@ -119,16 +122,16 @@ for /f "usebackq tokens=1,2,3 delims=;" %%a in (`findstr /b "%mydata%;" %myself%
     )
 )
 if defined lastp (
-    echo [90m^|[0m Num  : [93m%lastpn%[0m
+    echo %margin%[90m║[0m Num  : [93m%lastpn%[0m
     rem bug "&" echo [90m^|[0m File : [92m%lastp:~,75%..[0m
-	echo [90m^|[0m File : [92m"%lastp:~,73%" ..[0m
+	echo %margin%[90m║[0m File : [92m"%lastp:~,73%" ..[0m
 	rem if %lastpn% lss 10 (set lastpn=%lastpn:0=%)
     set /a proxpn=100+%lastpn%+1-100 2>nul
 ) else (
-    echo [90m^|[0m  [91mNESSUNA PUNTATA ANCORA VISTA[0m
+    echo %margin%[90m║[0m [91mNESSUNA PUNTATA ANCORA VISTA[0m
     set proxpn=1
 )
-echo [90m+-------------------------------------------------------------------------------------+[0m
+echo %margin%[90m╚═════════════════════════════════════════════════════════════════════════════════════╝[0m
 
 :player
 ::PLAYER
@@ -146,7 +149,7 @@ if exist "%tempfileplayer%" (
 
 :selector
 echo(
-set /p p=Puntata da vedere n.[[7mx[0m] [[7m+[0m=Puntata+1] [[7mU[0m=Ultima vista] [[7mP[0mlayer=[93m%plname%[0m] [[7mQ[0m=ESCE] ? 
+set /p "p=%margin: =═% Puntata da vedere n.[[7mx[0m] [[7m+[0m=Puntata+1] [[7mU[0m=Ultima vista] [[7mP[0mlayer=[93m%plname%[0m] [[7mQ[0m=ESCE] ? "
 if "%p%"=="" goto inizio
 if /i "%p%"=="q" exit /b 1
 if /i "%p%"=="p" goto setplayer
@@ -160,13 +163,13 @@ echo(
 set pp=%pp: =%
 set /a pp=100+%pp%-100 2>nul
 echo %pp%|findstr "^[0-9][0-9]*$" >nul
-if errorlevel 1 (echo(&echo [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
+if errorlevel 1 (echo(&echo %margin%[91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
 
 ::CHECK EXIST
 set "file="
 for /f "delims=" %%f in ('dir /b /a-d "*%puntata%0%pp%*" 2^>nul ^| findstr /R /I "%puntata%0%pp%[^0-9]"') do (set "file=%%f" & goto play_it)
 for /f "delims=" %%f in ('dir /b /a-d "*%puntata%%pp%*" 2^>nul ^| findstr /R /I "%puntata%%pp%[^0-9]"') do (set "file=%%f" & goto play_it)
-echo(&echo [91mPUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio
+echo(&echo %margin%[91mPUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio
 
 :play_it
 ::calcola l'estensione
@@ -174,18 +177,23 @@ set pp=%pp: =%
 set ext=
 for %%e in (.avi .mkv .mp4 .m4v) do (if not defined ext if exist "*%puntata%0%pp%*%%e" set ext=%%e)
 for %%e in (.avi .mkv .mp4 .m4v) do (if not defined ext if exist "*%puntata%%pp%*%%e" set ext=%%e)
-if not defined ext (echo [91mEstensione non trovata![0m&pause&goto inizio)
+if not defined ext (echo %margin%[91mEstensione non trovata![0m&pause&goto inizio)
 
 	REM SEASON FINALE?
 	rem for /f "delims=" %%a in ('powershell " %pp% + 0 "') do (set ppfinale=%%a)
 	set /a ppfinale=100+%pp%-100 2>nul
-	if "%ppfinale%" == "%npuntate%" for /l %%a in (1,1,25) do <nul set /p x=%SF%
-	if "%ppfinale%" == "%npuntate%" echo(&echo(
+	if "%ppfinale%" == "%npuntate%" (
+	echo %margin%[103;30m╔═════════════════════════════════════════════════════════════════════════════════════╗[0m
+	rem for /l %%a in (1,1,25) do <nul set /p x=%SF%
+	for /l %%a in (1,1,5) do echo %margin%%SF%
+	echo %margin%[103;30m╚═════════════════════════════════════════════════════════════════════════════════════╝[0m
+	echo(
+	)
 
-echo Vuoi visionare la Puntata:[93m
-dir /b /a-d "%file%" 2>nul
-if errorlevel 1 (echo(&echo [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
-set /p cc=[0m[[7mS[0m/[7mn[0m]
+echo %margin% Vuoi visionare la Puntata:[93m
+echo(|set /p=%margin: =═% &dir /b /a-d "%file%" 2>nul
+if errorlevel 1 (echo(&echo %margin%[91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
+echo(|set /p "p=%margin: =═% "&set /p cc=[0m[[7mS[0m/[7mn[0m] 
 if /i "%cc%"=="n" goto inizio
 
 ::MEMORIZZA ULTIMA PUNTATA
@@ -199,8 +207,8 @@ move /y "%tmp_puntata%" %myself% >nul
 
 :play
 ::START PLAYING
-if not exist "%plpath%" (echo !!!IL LETTORE NON E' PRESENTE NEL SISTEMA NEL PATH INDICATO!!!&pause&exit /b 1)
-echo( & echo [7mINIZIO RIPRODUZIONE PUNTATA:
+if not exist "%plpath%" (echo %margin%!!!IL LETTORE NON E' PRESENTE NEL SISTEMA NEL PATH INDICATO!!!&pause&exit /b 1)
+echo( & echo %margin%[7mINIZIO RIPRODUZIONE PUNTATA:
 if /i "%p%"=="u" (echo(|set /p ="[93m%lastp%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%lastp%") else (echo(|set /p ="[93m%file%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%file:"=%")
 exit /b 0
 
@@ -239,9 +247,9 @@ timeout /t 30 & exit /b 1
 exit /b 0
 
 REM ================================================ HELP ====================================================
-#HELP#[103m[30m=======================================================================================[0m
-#HELP#[103m[30m                        FORMATO NOMI PUNTATE                                           [0m
-#HELP#[103m[30m=======================================================================================[0m
+#HELP#[103m[30m╔═════════════════════════════════════════════════════════════════════════════════════╗[0m
+#HELP#[103m[30m║                               FORMATO NOMI PUNTATE                                  ║[0m
+#HELP#[103m[30m╚═════════════════════════════════════════════════════════════════════════════════════╝[0m
 #HELP# #
 #HELP#[96mSTAGIONE:[0m
 #HELP#  [90m- 1 o 2 cifre[0m
