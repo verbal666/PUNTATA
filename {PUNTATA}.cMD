@@ -73,19 +73,17 @@ for /f "usebackq tokens=1,2 delims=;" %%t in ("%TEMP%\puntate_type.dat") do (
 
 :ok
 ::validatore e note
-REM CONTROLLO PATH/FILE SOSPETTI (SAFE MODE) ...... TODO..FIX
+REM CONTROLLO PATH/FILE SOSPETTI (SAFE MODE) ......
 :: []
-cd|findstr /v "[[] []]">nul
-if  errorlevel 1 (
+cd|findstr "[[] []]" >nul && (
 echo(&echo(&echo [90m+-------------------------------------------------------------------------------------+[0m
 echo [90m^|[0m[7m NOTE UTENTE                                                                         [0m[90m^|[0m
 echo [90m+-------------------------------------------------------------------------------------+[0m
-	echo [90m^|[0m[7m L'UTILIZZO DI CARATTERI SPECIALI [ ] NEI PATH POTREBBE PORTARE                      [0m[90m^|[0m
-	echo [90m^|[0m[7m A PROBLEMI DI RUN DELLO SCRIPT                                                      [0m[90m^|[0m
-	echo [90m+-------------------------------------------------------------------------------------+[0m&echo(
-	)
+echo [90m^|[0m[7m L'UTILIZZO DI CARATTERI SPECIALI [ ] NEI PATH POTREBBE PORTARE                      [0m[90m^|[0m
+echo [90m^|[0m[7m A PROBLEMI DI RUN DELLO SCRIPT                                                      [0m[90m^|[0m
+echo [90m+-------------------------------------------------------------------------------------+[0m&echo(
 )
-REM CONTROLLO PATH/FILE SOSPETTI (SAFE MODE) ...... TODO..FIX
+REM CONTROLLO PATH/FILE SOSPETTI (SAFE MODE) ......
 
 ::validatore finale
 if "%puntata%"=="" (
