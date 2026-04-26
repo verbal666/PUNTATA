@@ -209,13 +209,7 @@ move /y "%tmp_puntata%" %myself% >nul
 ::START PLAYING
 if not exist "%plpath%" (echo %margin% !!!IL LETTORE NON E' PRESENTE NEL SISTEMA NEL PATH INDICATO!!!&pause&exit /b 1)
 echo( & echo %margin% [7mINIZIO RIPRODUZIONE PUNTATA:[0m[93m
-if /i "%p%"=="u" (
-echo(|set /p="%margin: =═% " & echo %lastp%[0m"
-call start /I /WAIT "" "%plpath%" "%~dp0%lastp%"
-) else (
-echo(|set /p="%margin: =═% " & echo %file%[0m
-call start /I /WAIT "" "%plpath%" "%~dp0%file:"=%"
-)
+if /i "%p%"=="u" (echo(|set /p="%margin: =═% %lastp%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%lastp%") else (echo(|set /p="%margin: =═% %file%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%file:"=%")
 exit /b 0
 
 :setplayer
