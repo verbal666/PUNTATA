@@ -30,8 +30,8 @@ echo ^|              GESTIONE DELL'ULTIMA PUNTATA DI UNA SERIE TV               
 echo ^|          PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA                  ^|
 echo ^|                           %VERSION% BY VerbaL 2015-%date:~6,4%                                   ^|
 echo +-------------------------------------------------------------------------------------+[0m
-echo.
-echo.
+echo(
+echo(
 set myself="%~f0"
 set mydata=METADATA
 set myhelp=#HELP#
@@ -41,7 +41,7 @@ set "media=[.]avi$ [.]mkv$ [.]mp4$ [.]m4v$ [.]mov$ [.]wmv$ [.]flv$ [.]webm$ [.]m
 set "subs=[.]srt$ [.]ass$ [.]ssa$ [.]vtt$ [.]sub$ [.]idx$ [.]sup$ [.]sbv$ [.]ttml$ [.]dfxp$ [.]smi$ [.]sami$ [.]stl$ [.]itt$"
 
 ::YOU ARE HERE
-echo [7mDIRECTORY CORRENTE:[0m %cd%&echo.
+echo [7mDIRECTORY CORRENTE:[0m %cd%&echo(
 
 ::ELENCO I FILE DISPONIBILI
 echo [7mELENCO DELLE PUNTATE:[0m[93m
@@ -72,20 +72,31 @@ for /f "usebackq tokens=1,2 delims=;" %%t in ("%TEMP%\puntate_type.dat") do (
 )
 
 :ok
-REM CONTROLLO FILE SOSPETTI (SAFE MODE) ...... TODO..FIX
-rem ... ... ... ... ...
-REM CONTROLLO FILE SOSPETTI (SAFE MODE) ...... TODO..FIX
+::validatore e note
+REM CONTROLLO PATH/FILE SOSPETTI (SAFE MODE) ...... TODO..FIX
+:: []
+cd|findstr /v "[[] []]">nul
+if  errorlevel 1 (
+echo(&echo(&echo [90m+-------------------------------------------------------------------------------------+[0m
+echo [90m^|[0m[7m NOTE UTENTE                                                                         [0m[90m^|[0m
+echo [90m+-------------------------------------------------------------------------------------+[0m
+	echo [90m^|[0m[7m L'UTILIZZO DI CARATTERI SPECIALI [ ] NEI PATH POTREBBE PORTARE                      [0m[90m^|[0m
+	echo [90m^|[0m[7m A PROBLEMI DI RUN DELLO SCRIPT                                                      [0m[90m^|[0m
+	echo [90m+-------------------------------------------------------------------------------------+[0m&echo(
+	)
+)
+REM CONTROLLO PATH/FILE SOSPETTI (SAFE MODE) ...... TODO..FIX
 
 ::validatore finale
 if "%puntata%"=="" (
 	setlocal disabledelayedexpansion
-	echo Nessuna puntata presente in questa directory.&echo.
+	echo Nessuna puntata presente in questa directory.&echo(
 	for /f "tokens=2* delims=#" %%a in ('type %myself%^|findstr "^%myhelp%"') do @echo(%%a
-	echo.&pause&goto END
+	echo(&pause&goto END
 )
 endlocal
-echo.&echo [0m+-------------------------------------------------------------------------------------+&echo|set /p=[7mTIPO PUNTATE:[0m %puntata%   [7mNUMERO PUNTATE:[0m %npuntate%
-echo.&echo [0m+-------------------------------------------------------------------------------------+
+echo(&echo [0m+-------------------------------------------------------------------------------------+&echo [90m^| [0m[7mTIPO PUNTATE:[0m %puntata%   [7mNUMERO PUNTATE:[0m %npuntate%
+echo [0m+-------------------------------------------------------------------------------------+
 
 	REM INIT --- INIZIO NORMALIZZAZIONE NOMI FILE (VMAX v3.3 FINAL ONE-LINER) --- FAST.PS
 	:: Estrae le estensioni dalle tue variabili %media% e %subs% e pulisce i nomi
@@ -95,7 +106,7 @@ echo.&echo [0m+----------------------------------------------------------------
 REM INIT --- FINE NORMALIZZAZIONE --- FAST.PS
 
 ::REPORT + PLAYER DA TEMPFILES / METADATA
-echo.
+echo(
 echo [90m+-------------------------------------------------------------------------------------+[0m
 echo [90m^|[0m [96mULTIMA PUNTATA VISTA[0m                                                                [90m^|[0m
 echo [90m+-------------------------------------------------------------------------------------+[0m
@@ -136,7 +147,7 @@ if exist "%tempfileplayer%" (
 )
 
 :selector
-echo.
+echo(
 set /p p=Puntata da vedere n.[[7mx[0m] [[7m+[0m=Puntata+1] [[7mU[0m=Ultima vista] [[7mP[0mlayer=[93m%plname%[0m] [[7mQ[0m=ESCE] ? 
 if "%p%"=="" goto inizio
 if /i "%p%"=="q" exit /b 1
@@ -147,17 +158,17 @@ echo %p%|findstr "^[0-9][0-9]*$" >nul && set pp=%p%
 
 :check
 ::CHECK SYNTAX
-echo.
+echo(
 set pp=%pp: =%
 set /a pp=100+%pp%-100 2>nul
 echo %pp%|findstr "^[0-9][0-9]*$" >nul
-if errorlevel 1 (echo.&echo [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
+if errorlevel 1 (echo(&echo [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
 
 ::CHECK EXIST
 set "file="
 for /f "delims=" %%f in ('dir /b /a-d "*%puntata%0%pp%*" 2^>nul ^| findstr /R /I "%puntata%0%pp%[^0-9]"') do (set "file=%%f" & goto play_it)
 for /f "delims=" %%f in ('dir /b /a-d "*%puntata%%pp%*" 2^>nul ^| findstr /R /I "%puntata%%pp%[^0-9]"') do (set "file=%%f" & goto play_it)
-echo.&echo [91mPUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio
+echo(&echo [91mPUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio
 
 :play_it
 ::calcola l'estensione
@@ -171,11 +182,11 @@ if not defined ext (echo [91mEstensione non trovata![0m&pause&goto inizio)
 	rem for /f "delims=" %%a in ('powershell " %pp% + 0 "') do (set ppfinale=%%a)
 	set /a ppfinale=100+%pp%-100 2>nul
 	if "%ppfinale%" == "%npuntate%" for /l %%a in (1,1,25) do <nul set /p x=%SF%
-	if "%ppfinale%" == "%npuntate%" echo.&echo.
+	if "%ppfinale%" == "%npuntate%" echo(&echo(
 
 echo Vuoi visionare la Puntata:[93m
 dir /b /a-d "%file%" 2>nul
-if errorlevel 1 (echo.&echo [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
+if errorlevel 1 (echo(&echo [91mPUNTATA NON CORRETTA![0m&timeout /t 5&goto inizio)
 set /p cc=[0m[[7mS[0m/[7mn[0m]
 if /i "%cc%"=="n" goto inizio
 
@@ -191,13 +202,13 @@ move /y "%tmp_puntata%" %myself% >nul
 :play
 ::START PLAYING
 if not exist "%plpath%" (echo !!!IL LETTORE NON E' PRESENTE NEL SISTEMA NEL PATH INDICATO!!!&pause&exit /b 1)
-echo. & echo [7mINIZIO RIPRODUZIONE PUNTATA:
+echo( & echo [7mINIZIO RIPRODUZIONE PUNTATA:
 if /i "%p%"=="u" (echo(|set /p ="[93m%lastp%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%lastp%") else (echo(|set /p ="[93m%file%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%file:"=%")
 exit /b 0
 
 :setplayer
 :: SELEZIONA IL PLAYER DA UTILIZZARE - VLC [default] - MPC/BE - SM
-echo.&set /p player=[7m1[0m)VLC [7m2[0m)SM [7m3[0m)MPC [7m4[0m)Custom ? 
+echo(&set /p player=[7m1[0m)VLC [7m2[0m)SM [7m3[0m)MPC [7m4[0m)Custom ? 
 if "%player%"=="" goto inizio
 if "%player%"=="1" (
     REM VLC 32/64 - INSTALLED
@@ -214,7 +225,7 @@ if "%player%"=="3" (
 )
 if "%player%"=="4" (
     REM CUSTOM PLAYER
-    echo.&set /p Name=Name ? 
+    echo(&set /p Name=Name ? 
     set /p Path_To_Exe=Path_To_Exe ? 
     if exist "%Path_To_Exe%" (
         >"%tempfileplayer%" echo %Name%;"%Path_To_Exe%"
