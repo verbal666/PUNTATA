@@ -101,9 +101,7 @@ echo [0m+----------------------------------------------------------------------
 	REM INIT --- INIZIO NORMALIZZAZIONE NOMI FILE (VMAX v3.3 FINAL ONE-LINER) --- FAST.PS
 	:: Estrae le estensioni dalle tue variabili %media% e %subs% e pulisce i nomi
 	powershell -NoProfile -Command "$vid = '%media%' -split ' ' -replace '\[\.\]', '.' -replace '\$', ''; $sub = '%subs%' -split ' ' -replace '\[\.\]', '.' -replace '\$', ''; Get-ChildItem -LiteralPath . -File | Where-Object { $e = $_.Extension; ($vid + $sub) | Where-Object { $e -match $_ } } | ForEach-Object { $n = $PSItem.Name; $new = $n -replace '[&!%%%%^();, ]+', '.'; $new = $new -replace '\.{2,}', '.'; if ($n -ne $new -and -not (Test-Path -LiteralPath $new)) { Rename-Item -LiteralPath $n -NewName $new -ErrorAction SilentlyContinue } }" 2>nul
-	REM INIT --- FINE NORMALIZZAZIONE ---
-
-REM INIT --- FINE NORMALIZZAZIONE --- FAST.PS
+	REM INIT --- FINE NORMALIZZAZIONE --- FAST.PS
 
 ::REPORT + PLAYER DA TEMPFILES / METADATA
 echo(
