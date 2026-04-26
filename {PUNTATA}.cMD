@@ -76,12 +76,14 @@ for /f "usebackq tokens=1,2 delims=;" %%t in ("%TEMP%\puntate_type.dat") do (
 REM CONTROLLO PATH/FILE SOSPETTI (SAFE MODE) ......
 :: []
 cd|findstr "[[] []]" >nul && (
-echo(&echo(&echo [90m+-------------------------------------------------------------------------------------+[0m
-echo [90m^|[0m[7m NOTE UTENTE                                                                         [0m[90m^|[0m
-echo [90m+-------------------------------------------------------------------------------------+[0m
-echo [90m^|[0m[7m L'UTILIZZO DI CARATTERI SPECIALI [ ] NEI PATH POTREBBE PORTARE                      [0m[90m^|[0m
-echo [90m^|[0m[7m A PROBLEMI DI RUN DELLO SCRIPT                                                      [0m[90m^|[0m
-echo [90m+-------------------------------------------------------------------------------------+[0m&echo(
+echo(&echo(
+echo [0;7m╔═════════════════════════════════════════════════════════════════════════════════════╗
+echo ║ NOTE UTENTE                                                                         ║
+echo ╠═════════════════════════════════════════════════════════════════════════════════════╣
+echo ║ L'UTILIZZO DI CARATTERI SPECIALI [ ] NEI PATH POTREBBE PORTARE                      ║
+echo ║ A PROBLEMI DI RUN DELLO SCRIPT                                                      ║
+echo ╚═════════════════════════════════════════════════════════════════════════════════════╝[0m
+echo(
 )
 REM CONTROLLO PATH/FILE SOSPETTI (SAFE MODE) ......
 
