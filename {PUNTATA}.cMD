@@ -124,6 +124,7 @@ for /f "usebackq tokens=1,2,3 delims=;" %%a in (`findstr /b "%mydata%;" %myself%
 if defined lastp (
     echo %margin%[90m║[0m Num  : [93m%lastpn%[0m
 	echo %margin%[90m║[0m File : [92m"%lastp:~,73%"[0m
+	rem if %lastpn% lss 10 (set lastpn=%lastpn:0=%)
     set /a proxpn=100+%lastpn%+1-100 2>nul
 ) else (
     echo %margin%[90m║[0m [91mNESSUNA PUNTATA ANCORA VISTA[0m
@@ -206,8 +207,8 @@ move /y "%tmp_puntata%" %myself% >nul
 :play
 ::START PLAYING
 if not exist "%plpath%" (echo %margin% !!!IL LETTORE NON E' PRESENTE NEL SISTEMA NEL PATH INDICATO!!!&pause&exit /b 1)
-echo( & echo %margin% [7mINIZIO RIPRODUZIONE PUNTATA:[0m[93m
-if /i "%p%"=="u" (echo(|set /p="%margin: =═% %lastp%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%lastp%") else (echo(|set /p="%margin: =═% %file%[0m" & call start /I /WAIT "" "%plpath%" "%~dp0%file:"=%")
+echo(&echo %margin%[7m╔════════════════════════════════════╗[0m&echo %margin%[7m║    INIZIO RIPRODUZIONE PUNTATA.    ║[0m&echo %margin%[7m╚════════════════════════════════════╝[0m
+if /i "%p%"=="u" (call start /I /WAIT "" "%plpath%" "%~dp0%lastp%") else (call start /I /WAIT "" "%plpath%" "%~dp0%file:"=%")
 exit /b 0
 
 :setplayer
