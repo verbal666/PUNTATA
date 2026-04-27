@@ -124,7 +124,6 @@ for /f "usebackq tokens=1,2,3 delims=;" %%a in (`findstr /b "%mydata%;" %myself%
 if defined lastp (
     echo %margin%[90m║[0m Num  : [93m%lastpn%[0m
 	echo %margin%[90m║[0m File : [92m"%lastp:~,73%"[0m
-	rem if %lastpn% lss 10 (set lastpn=%lastpn:0=%)
     set /a proxpn=100+%lastpn%+1-100 2>nul
 ) else (
     echo %margin%[90m║[0m [91mNESSUNA PUNTATA ANCORA VISTA[0m
