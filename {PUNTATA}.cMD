@@ -168,7 +168,7 @@ if errorlevel 1 (echo(&echo %margin%[91mPUNTATA NON CORRETTA![0m&timeout /t 5&
 set "file="
 for /f "delims=" %%f in ('dir /b /a-d "*%puntata%0%pp%*" 2^>nul ^| findstr /R /I "%puntata%0%pp%[^0-9]"') do (set "file=%%f" & goto play_it)
 for /f "delims=" %%f in ('dir /b /a-d "*%puntata%%pp%*" 2^>nul ^| findstr /R /I "%puntata%%pp%[^0-9]"') do (set "file=%%f" & goto play_it)
-echo(&echo %margin%[91mPUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio
+echo(&echo %margin%[91mPUNTATA %pp% NON TROVATA![0m&timeout /t 5 >nul&goto inizio
 
 :play_it
 ::calcola l'estensione
@@ -176,7 +176,7 @@ set pp=%pp: =%
 set ext=
 for %%e in (.avi .mkv .mp4 .m4v) do (if not defined ext if exist "*%puntata%0%pp%*%%e" set ext=%%e)
 for %%e in (.avi .mkv .mp4 .m4v) do (if not defined ext if exist "*%puntata%%pp%*%%e" set ext=%%e)
-if not defined ext (echo %margin%[91mEstensione non trovata![0m&pause&goto inizio)
+if not defined ext (echo %margin%[91mEstensione non trovata![0m&pause&goto inizio)
 
 	REM SEASON FINALE?
 	rem for /f "delims=" %%a in ('powershell " %pp% + 0 "') do (set ppfinale=%%a)
