@@ -4,7 +4,7 @@
 :: === PERMETTE ALL'UTENTE DI MEMORIZZARE L'ULTIMA PUNTATA VISTA ===
 :: ========================= BY VerbaL 2015 ========================
 :: =================================================================
-set VERSION=3.2
+set VERSION=3.3
 
 :inizio
 chcp 65001 >nul
@@ -103,7 +103,13 @@ echo %margin%[0m╚════════════════════
 
 	REM INIT --- INIZIO NORMALIZZAZIONE NOMI FILE (VMAX v3.3 FINAL ONE-LINER) --- FAST.PS
 	:: Estrae le estensioni dalle tue variabili %media% e %subs% e pulisce i nomi
-	powershell -NoProfile -Command "$vid = '%media%' -split ' ' -replace '\[\.\]', '.' -replace '\$', ''; $sub = '%subs%' -split ' ' -replace '\[\.\]', '.' -replace '\$', ''; Get-ChildItem -LiteralPath . -File | Where-Object { $e = $_.Extension; ($vid + $sub) | Where-Object { $e -match $_ } } | ForEach-Object { $n = $PSItem.Name; $new = $n -replace '[&!%%%%^();, ]+', '.'; $new = $new -replace '\.{2,}', '.'; if ($n -ne $new -and -not (Test-Path -LiteralPath $new)) { Rename-Item -LiteralPath $n -NewName $new -ErrorAction SilentlyContinue } }" 2>nul
+	set "pscommand=Push-Location -LiteralPath '%~dp0';$vid = '%media%' -split ' ' -replace '\[\.\]', '.' -replace '\$', ''; $sub = '%subs%' -split ' ' -replace '\[\.\]', '.' -replace '\$', ''; Get-ChildItem -LiteralPath . -File | Where-Object { $e = $_.Extension; ($vid + $sub) | Where-Object { $e -match $_ } } | ForEach-Object { $n = $PSItem.Name; $new = $n -replace '[&!%%%%^();, ]+', '.'; $new = $new -replace '\.{2,}', '.'; if ($n -ne $new -and -not (Test-Path -LiteralPath $new)) { Rename-Item -LiteralPath $n -NewName $new -ErrorAction SilentlyContinue } }"
+	where pwsh 1>nul 2>nul
+	if errorlevel 1 (REM PS.V5
+	powershell -NoProfile -Command "%pscommand%" 2>nul
+	) else (REM PS.V7
+	pwsh -NoProfile -Command "%pscommand%" 2>nul
+	)
 	REM INIT --- FINE NORMALIZZAZIONE --- FAST.PS
 
 ::REPORT + PLAYER DA TEMPFILES / METADATA
