@@ -51,21 +51,23 @@ type nul>"%TEMP%\puntate_type.dat"
 echo [0-9]x[0-9][0-9]*;x>>"%TEMP%\puntate_type.dat"
 echo [0-9]e[0-9][0-9]*;e>>"%TEMP%\puntate_type.dat"
 echo [0-9]ep[0-9][0-9]*;ep>>"%TEMP%\puntate_type.dat"
+echo episodio.[0-9]*;episodio>>"%TEMP%\puntate_type.dat"
+echo episode.[0-9]*;episode>>"%TEMP%\puntate_type.dat"
 echo [0-9].e[0-9][0-9]*;e>>"%TEMP%\puntate_type.dat"
 echo [0-9][.][0-9][0-9]*;.>>"%TEMP%\puntate_type.dat"
 echo [.][0-9][0-9]*[.];.>>"%TEMP%\puntate_type.dat"
-echo ^^[0-9][0-9]*..;*>>"%TEMP%\puntate_type.dat"
+echo [0-9]*;*>>"%TEMP%\puntate_type.dat"
 setlocal enabledelayedexpansion
 for /f "usebackq tokens=1,2 delims=;" %%t in ("%TEMP%\puntate_type.dat") do (
     set "found="
-    for /f "delims=" %%A in ('dir /b /a-d ^| findstr /R /I "%media%" ^| findstr /R /I "%%t" ^| findstr /vi "%subs%"') do (
+    for /f "delims=" %%A in ('dir /b /a-d ^| findstr /V /R "19[0-9][0-9] 20[0-9][0-9]" ^| findstr /R /I "%media%" ^| findstr /R /I "%%t" ^| findstr /vi "%subs%"') do (
         set "line=%%A"
         echo(%margin%!line:~0,85!..
         set found=1
     )
     if defined found (
         endlocal & set puntata=%%u
-        for /f %%a in ('dir /b /a-d ^| findstr /vi "[.]srt$" ^| findstr /vi "[.]sub$" ^| findstr /vi "[.]idx$" ^| findstr /i %%t ^| find /c "."') do (
+        for /f %%a in ('dir /b /a-d ^| findstr /V /R "19[0-9][0-9] 20[0-9][0-9]" ^| findstr /vi "%subs%" ^| findstr /i %%t ^| find /c "."') do (
             set npuntate=%%a
             goto ok
         )
@@ -101,16 +103,23 @@ if %npuntate% lss 10 (set "add= ") else (set "add=")
 echo(&echo %margin%[0m╔═════════════════════════════════════════════════════════════════════════════════════╗&echo %margin%║ [0m[7mTIPO PUNTATE:[0m %puntata%   [7mNUMERO PUNTATE:[0m %npuntate%                                                %add%║
 echo %margin%[0m╚═════════════════════════════════════════════════════════════════════════════════════╝
 
-	REM INIT --- INIZIO NORMALIZZAZIONE NOMI FILE (VMAX v3.3 FINAL ONE-LINER) --- FAST.PS
-	:: Estrae le estensioni dalle tue variabili %media% e %subs% e pulisce i nomi
-	set "pscommand=Push-Location -LiteralPath '%~dp0';$vid = '%media%' -split ' ' -replace '\[\.\]', '.' -replace '\$', ''; $sub = '%subs%' -split ' ' -replace '\[\.\]', '.' -replace '\$', ''; Get-ChildItem -LiteralPath . -File | Where-Object { $e = $_.Extension; ($vid + $sub) | Where-Object { $e -match $_ } } | ForEach-Object { $n = $PSItem.Name; $new = $n -replace '[&!%%%%^();, ]+', '.'; $new = $new -replace '\.{2,}', '.'; if ($n -ne $new -and -not (Test-Path -LiteralPath $new)) { Rename-Item -LiteralPath $n -NewName $new -ErrorAction SilentlyContinue } }"
-	where pwsh 1>nul 2>nul
-	if errorlevel 1 (REM PS.V5
-	powershell -NoProfile -Command "%pscommand%" 2>nul
-	) else (REM PS.V7
-	pwsh -NoProfile -Command "%pscommand%" 2>nul
-	)
-	REM INIT --- FINE NORMALIZZAZIONE --- FAST.PS
+REM INIT --- NORMALIZZAZIONE IBRIDA (CMD per RENAME + PS per STRINGA)
+setlocal enabledelayedexpansion
+for /f "delims=" %%A in ('dir /b /a-d ^| findstr /R /I "%puntata% %media% %subs%"') do (
+    set "oldname=%%A"
+    :: PS (v5+) elabora solo il testo. 'oldname' si passa via variabile d'ambiente per massima sicurezza.
+    for /f "delims=" %%B in ('powershell -NoProfile -Command "$n = [System.Environment]::GetEnvironmentVariable('oldname'); $new = $n -replace '[&!%%%%^();, ]+', '.'; $new = $new -replace '\.{2,}', '.'; Write-Output $new"') do (
+        set "newname=%%B"
+    )
+    :: CMD normalizza
+    if /i "!oldname!" NEQ "!newname!" (
+        if not exist "!newname!" (
+            ren "%%A" "!newname!"
+        )
+    )
+)
+endlocal
+REM INIT --- FINE NORMALIZZAZIONE IBRIDA ---
 
 ::REPORT + PLAYER DA TEMPFILES / METADATA
 echo(
