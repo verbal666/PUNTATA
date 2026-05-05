@@ -79,15 +79,20 @@ for /f "usebackq tokens=1,2 delims=;" %%t in ("%TEMP%\puntate_type.dat") do (
 REM CONTROLLO PATH/FILE SOSPETTI (SAFE MODE) ......
 :: []
 cd|findstr "[[] []]" >nul && (
-echo(&echo(
-echo %margin%[0;7m╔═════════════════════════════════════════════════════════════════════════════════════╗[0m
-echo %margin%[0;7m║ NOTE UTENTE                                                                         ║[0m
-echo %margin%[0;7m╠═════════════════════════════════════════════════════════════════════════════════════╣[0m
-echo %margin%[0;7m║ L'UTILIZZO DI CARATTERI SPECIALI [ ] NEI PATH POTREBBE PORTARE                      ║[0m
-echo %margin%[0;7m║ A PROBLEMI DI RUN DELLO SCRIPT                                                      ║[0m
-echo %margin%[0;7m╚═════════════════════════════════════════════════════════════════════════════════════╝[0m
 echo(
+echo %margin%[0;7m╔═════════════════════════════════════════════════════════════════════════════════════╗[0m
+echo %margin%[0;7m║ L'UTILIZZO DI CARATTERI SPECIALI [ ] NEI PATH POTREBBE PORTARE DI RUN               ║[0m
+echo %margin%[0;7m╚═════════════════════════════════════════════════════════════════════════════════════╝[0m
 )
+dir /b /a-d|findstr /R "19[0-9][0-9] 20[0-9][0-9]" >nul && (
+echo(
+echo %margin%[0;7m╔═════════════════════════════════════════════════════════════════════════════════════╗[0m
+echo %margin%[0;7m║ L'UTILIZZO DI DATE NEI FILENAME -2020,1980,1900- POTREBBE PORTARE PROBLEMI DI RUN   ║[0m
+echo %margin%[0;7m╠═════════════════════════════════════════════════════════════════════════════════════╝[0m
+for /f "delims=" %%f in ('dir /b /a-d^|findstr /R "19[0-9][0-9] 20[0-9][0-9]"') do (echo %margin%[0;7m║ [91m%%f[0m)
+echo %margin%[0;7m╚═════════════════════════════════════════════════════════════════════════════════════╝[0m
+)
+echo(
 REM CONTROLLO PATH/FILE SOSPETTI (SAFE MODE) ......
 
 ::validatore finale
