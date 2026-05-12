@@ -108,21 +108,11 @@ echo %margin%[0m╚════════════════════
 
 REM INIT --- NORMALIZZAZIONE IBRIDA (CMD per RENAME + PS per STRINGA)
 :: --- NORMALIZZAZIONE IBRIDA 5.0 (Anti-Punti Esclamativi) ---
-for /f "delims=" %%A in ('dir /b /a-d ^| findstr /R /I "%puntata% %media% %subs%"') do (
-    set "oldname=%%A"
-    for /f "usebackq delims=" %%B in (`powershell -NoProfile -Command "$n = $env:oldname; $new = $n -replace '[&!%%%%^();, ]+', '.'; $new = $new -replace '\.{2,}', '.'; $new.Trim('.')"`) do (
-        set "newname=%%B"
-    )
-    setlocal enabledelayedexpansion
-    if defined newname (
-        if /i "!oldname!" NEQ "!newname!" (
-            if not exist "!newname!" (
-                ren "!oldname!" "!newname!"
-            )
-        )
-    )
-    endlocal
-)
+for /f "delims=" %%A in ('dir /b /a-d ^| findstr /R /I "%puntata% %media% %subs%"') do (set "oldname=%%A"
+for /f "usebackq delims=" %%B in (`powershell -NoProfile -Command "$n = $env:oldname; $new = $n -replace '[&!%%%%^();, ]+', '.'; $new = $new -replace '\.{2,}', '.'; $new.Trim('.')"`) do (set "newname=%%B")
+setlocal enabledelayedexpansion
+if defined newname (if /i "!oldname!" NEQ "!newname!" (if not exist "!newname!" (ren "!oldname!" "!newname!")))
+endlocal )
 REM INIT --- FINE NORMALIZZAZIONE IBRIDA ---
 
 ::REPORT + PLAYER DA TEMPFILES / METADATA
